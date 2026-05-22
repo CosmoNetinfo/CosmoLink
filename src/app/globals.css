@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+:root {
+  /* Default Cosmo Dark theme tokens (HSL) */
+  --bg-primary: 240 25% 4%;        /* #050508 */
+  --bg-secondary: 240 22% 8%;      /* #0c0c14 */
+  --bg-card: 240 20% 12%;          /* #161622 */
+  
+  --text-primary: 240 10% 98%;     /* #fcfcfd */
+  --text-secondary: 240 5% 70%;    /* #afafb6 */
+  --text-muted: 240 5% 48%;        /* #767680 */
+  
+  --primary: 263 90% 64%;          /* Purple accent #8b5cf6 */
+  --primary-hover: 263 90% 70%;
+  --secondary: 190 95% 45%;        /* Cyan accent #06b6d4 */
+  
+  --border: 240 15% 18%;           /* #282836 */
+  --border-focus: 263 90% 64%;
+  
+  --radius-button: 12px;
+  --font-sans: var(--font-outfit), sans-serif;
+}
+
+@theme {
+  --color-bg-primary: hsl(var(--bg-primary));
+  --color-bg-secondary: hsl(var(--bg-secondary));
+  --color-bg-card: hsl(var(--bg-card));
+  
+  --color-text-primary: hsl(var(--text-primary));
+  --color-text-secondary: hsl(var(--text-secondary));
+  --color-text-muted: hsl(var(--text-muted));
+  
+  --color-primary: hsl(var(--primary));
+  --color-primary-hover: hsl(var(--primary-hover));
+  --color-secondary: hsl(var(--secondary));
+  
+  --color-border: hsl(var(--border));
+  --color-border-focus: hsl(var(--border-focus));
+  
+  --font-outfit: var(--font-outfit);
+  --font-dm-sans: var(--font-dm-sans);
+  --font-syne: var(--font-syne);
+  --font-playfair: var(--font-playfair);
+  --font-space-mono: var(--font-space-mono);
+  --font-nunito: var(--font-nunito);
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--bg-primary));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(22, 22, 34, 0.45);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-hover:hover {
+  background: rgba(22, 22, 34, 0.65);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+}
+
+/* Cosmic gradient background animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1) translate(0px, 0px);
+    opacity: 0.3;
+  }
+  33% {
+    transform: scale(1.1) translate(30px, -50px);
+    opacity: 0.5;
+  }
+  66% {
+    transform: scale(0.9) translate(-20px, 20px);
+    opacity: 0.4;
+  }
+}
+
+.animate-pulse-glow-1 {
+  animation: pulseGlow 15s infinite alternate ease-in-out;
+}
+
+.animate-pulse-glow-2 {
+  animation: pulseGlow 20s infinite alternate-reverse ease-in-out;
+}
