@@ -369,9 +369,9 @@ export default function Home() {
               </p>
             </div>
             <a href="https://wa.me/393517064080?text=Ciao,%20voglio%20attivare%20l%27offerta%20lancio%20CosmoLink%20PRO%20annuale" target="_blank" rel="noopener noreferrer" className="relative z-10 w-full md:w-auto shrink-0">
-              <Button className="w-full md:w-auto px-6 py-5 rounded-lg bg-white text-purple-700 hover:bg-white/90 font-bold transition-all border-0 shadow-md">
+              <button className="inline-flex items-center justify-center w-full md:w-auto px-6 py-3.5 text-sm rounded-xl bg-white text-purple-700 hover:bg-white/90 font-bold transition-all duration-200 border-0 shadow-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[hsl(240_25%_4%)] focus:ring-white">
                 Approfitta dell'offerta
-              </Button>
+              </button>
             </a>
           </div>
         </div>
