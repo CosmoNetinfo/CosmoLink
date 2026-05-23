@@ -106,7 +106,7 @@ function SortableLink({
             <>
               {/* Platform icon */}
               <div className="shrink-0">
-                <PlatformIcon slug={link.icon || ''} color={link.icon_color || undefined} size={24} />
+                <PlatformIcon slug={link.icon || ''} color={link.icon_color || undefined} size={24} fallbackUrl={link.url} />
               </div>
 
               {/* Title & URL */}
@@ -179,6 +179,7 @@ function SortableLink({
 export default function LinksPage() {
   const [links, setLinks] = useState<LinkType[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [platforms, setPlatforms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -203,19 +204,46 @@ export default function LinksPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const [{ data: profileData }, { data: linksData }] = await Promise.all([
+    const [{ data: profileData }, { data: linksData }, { data: platformsData }] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', user.id).single(),
       supabase.from('links').select('*').eq('user_id', user.id).order('position'),
+      supabase.from('platforms').select('slug, name, brand_color, domain_patterns'),
     ]);
 
     setProfile(profileData);
     setLinks(linksData || []);
+    setPlatforms(platformsData || []);
     setLoading(false);
   }, [supabase]);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  const handleUrlChange = (url: string) => {
+    setNewUrl(url);
+    if (!url) return;
+
+    try {
+      const hostname = new URL(url).hostname.toLowerCase().replace(/^www\./, '');
+      let found = false;
+      for (const p of platforms) {
+        const patterns: string[] = p.domain_patterns || [];
+        if (patterns.some((pat: string) => hostname.includes(pat.toLowerCase()))) {
+          // Auto-fill title with the platform's formatted name (e.g. "LinkedIn")
+          setNewTitle(p.name);
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        // If no platform detected, keep title empty
+        setNewTitle('');
+      }
+    } catch {
+      // Ignore invalid URL structures while typing
+    }
+  };
 
   async function handleAddLink(e: React.FormEvent) {
     e.preventDefault();
@@ -264,20 +292,17 @@ export default function LinksPage() {
         iconColor = '#1AB7EA';
       }
     } else if (linkType === 'link') {
-      const { data: platforms } = await supabase.from('platforms').select('slug, name, brand_color, domain_patterns');
-      if (platforms) {
-        try {
-          const hostname = new URL(newUrl).hostname.replace(/^www\./, '');
-          for (const p of platforms) {
-            const patterns: string[] = p.domain_patterns || [];
-            if (patterns.some((pat: string) => hostname.includes(pat))) {
-              icon = p.slug;
-              iconColor = p.brand_color;
-              break;
-            }
+      try {
+        const hostname = new URL(newUrl).hostname.toLowerCase().replace(/^www\./, '');
+        for (const p of platforms) {
+          const patterns: string[] = p.domain_patterns || [];
+          if (patterns.some((pat: string) => hostname.includes(pat.toLowerCase()))) {
+            icon = p.slug;
+            iconColor = p.brand_color;
+            break;
           }
-        } catch { /* ignore */ }
-      }
+        }
+      } catch { /* ignore */ }
     }
 
     const { error } = await supabase.from('links').insert({
@@ -447,7 +472,7 @@ export default function LinksPage() {
                   type="url"
                   placeholder="https://example.com"
                   value={newUrl}
-                  onChange={(e) => setNewUrl(e.target.value)}
+                  onChange={(e) => handleUrlChange(e.target.value)}
                   required
                 />
 

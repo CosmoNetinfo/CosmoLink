@@ -191,7 +191,7 @@ export default function PublicPageClient({ profile, links, themeConfig }: Public
                 rel="noopener noreferrer"
                 className="opacity-60 hover:opacity-100 transition-opacity"
               >
-                <PlatformIcon slug={platform} size={22} />
+                <PlatformIcon slug={platform} size={22} fallbackUrl={url as string} />
               </a>
             ))}
           </motion.div>
@@ -247,6 +247,7 @@ export default function PublicPageClient({ profile, links, themeConfig }: Public
                   slug={link.icon || ''}
                   color={link.icon_color?.replace('#', '') || undefined}
                   size={22}
+                  fallbackUrl={link.url}
                 />
                 <span className="flex-1 text-sm font-medium">{link.title}</span>
                 {link.is_featured && (
