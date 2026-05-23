@@ -45,10 +45,33 @@ export const metadata: Metadata = {
     "CosmoLink è la piattaforma link-in-bio definitiva: personalizza la tua pagina, traccia le visite, condividi i tuoi link in stile cosmico.",
   keywords: ["link in bio", "linktree alternative", "cosmolink", "link aggregator"],
   icons: {
-    icon: '/mascot-logo.png',
-    apple: '/mascot-logo.png',
-    shortcut: '/mascot-logo.png',
-  }
+    icon: '/mascot-favicon.png',
+    apple: '/mascot-favicon.png',
+    shortcut: '/mascot-favicon.png',
+  },
+  openGraph: {
+    title: "CosmoLink — Il tuo universo di link",
+    description:
+      "CosmoLink è la piattaforma link-in-bio definitiva: personalizza la tua pagina, traccia le visite, condividi i tuoi link in stile cosmico.",
+    url: "https://cosmo-link.vercel.app",
+    siteName: "CosmoLink",
+    images: [
+      {
+        url: "/mascot-favicon.png",
+        width: 711,
+        height: 721,
+        alt: "CosmoLink Mascot",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "CosmoLink — Il tuo universo di link",
+    description:
+      "CosmoLink è la piattaforma link-in-bio definitiva: personalizza la tua pagina, traccia le visite, condividi i tuoi link in stile cosmico.",
+    images: ["/mascot-favicon.png"],
+  },
 };
 
 export default function RootLayout({
