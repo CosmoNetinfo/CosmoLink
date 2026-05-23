@@ -248,6 +248,7 @@ export default function PublicPageClient({ profile, links, themeConfig }: Public
                   color={link.icon_color?.replace('#', '') || undefined}
                   size={22}
                   fallbackUrl={link.url}
+                  title={link.title}
                 />
                 <span className="flex-1 text-sm font-medium">{link.title}</span>
                 {link.is_featured && (

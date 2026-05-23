@@ -31,10 +31,12 @@ export interface Link {
 }
 
 export interface Platform {
+  id?: number;
   slug: string;
   name: string;
-  color: string;
-  pattern: string;
+  brand_color: string;
+  category?: string;
+  domain_patterns?: string[];
 }
 
 export interface Theme {

@@ -458,7 +458,7 @@ export default function AppearancePage() {
             </p>
             {platforms.slice(0, 5).map((plat) => (
               <div key={plat.slug} className="flex items-center gap-3">
-                <PlatformIcon slug={plat.slug} size={20} color={plat.color} className="shrink-0" />
+                <PlatformIcon slug={plat.slug} size={20} color={plat.brand_color} className="shrink-0" />
                 <span className="text-xs font-medium text-[hsl(240_10%_98%)] w-24 shrink-0">{plat.name}</span>
                 <input
                   type="url"
@@ -584,7 +584,7 @@ export default function AppearancePage() {
                     className={`w-full py-2.5 px-4 flex items-center justify-between text-xs font-semibold ${btnStyleClass}`}
                     style={{ borderRadius: radius }}
                   >
-                    <PlatformIcon slug={link.icon || ''} size={14} className="shrink-0" />
+                    <PlatformIcon slug={link.icon || ''} size={14} className="shrink-0" fallbackUrl={link.url} title={link.title} />
                     <span className="truncate flex-1 text-center px-2">{link.title}</span>
                     <span className="opacity-0 w-3.5"></span>
                   </div>

@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/Input';
 import { Toggle } from '@/components/ui/Toggle';
 import { Badge } from '@/components/ui/Badge';
 import { PlatformIcon } from '@/components/shared/PlatformIcon';
+import { detectPlatform } from '@/lib/detect-platform';
 import { Spinner } from '@/components/ui/Spinner';
 import {
   DndContext,
@@ -106,7 +107,7 @@ function SortableLink({
             <>
               {/* Platform icon */}
               <div className="shrink-0">
-                <PlatformIcon slug={link.icon || ''} color={link.icon_color || undefined} size={24} fallbackUrl={link.url} />
+                <PlatformIcon slug={link.icon || ''} color={link.icon_color || undefined} size={24} fallbackUrl={link.url} title={link.title} />
               </div>
 
               {/* Title & URL */}
@@ -220,28 +221,15 @@ export default function LinksPage() {
     loadData();
   }, [loadData]);
 
-  const handleUrlChange = (url: string) => {
+  const handleUrlChange = async (url: string) => {
     setNewUrl(url);
     if (!url) return;
 
-    try {
-      const hostname = new URL(url).hostname.toLowerCase().replace(/^www\./, '');
-      let found = false;
-      for (const p of platforms) {
-        const patterns: string[] = p.domain_patterns || [];
-        if (patterns.some((pat: string) => hostname.includes(pat.toLowerCase()))) {
-          // Auto-fill title with the platform's formatted name (e.g. "LinkedIn")
-          setNewTitle(p.name);
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        // If no platform detected, keep title empty
-        setNewTitle('');
-      }
-    } catch {
-      // Ignore invalid URL structures while typing
+    const p = await detectPlatform(url);
+    if (p && p.slug !== 'link') {
+      setNewTitle(p.name);
+    } else {
+      setNewTitle('');
     }
   };
 
@@ -292,17 +280,14 @@ export default function LinksPage() {
         iconColor = '#1AB7EA';
       }
     } else if (linkType === 'link') {
-      try {
-        const hostname = new URL(newUrl).hostname.toLowerCase().replace(/^www\./, '');
-        for (const p of platforms) {
-          const patterns: string[] = p.domain_patterns || [];
-          if (patterns.some((pat: string) => hostname.includes(pat.toLowerCase()))) {
-            icon = p.slug;
-            iconColor = p.brand_color;
-            break;
-          }
-        }
-      } catch { /* ignore */ }
+      const p = await detectPlatform(newUrl);
+      if (p && p.slug !== 'link') {
+        icon = p.slug;
+        iconColor = p.brand_color;
+      } else {
+        icon = 'link';
+        iconColor = '#6C5CE7';
+      }
     }
 
     const { error } = await supabase.from('links').insert({

@@ -1,57 +1,63 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Globe } from 'lucide-react';
 
 interface PlatformIconProps {
   slug: string;
   color?: string;
+  title?: string;
   size?: number;
   className?: string;
-  fallbackUrl?: string; // Optional URL to extract initial letter
+  fallbackUrl?: string; // kept for compatibility
 }
 
-export function PlatformIcon({ slug, color, size = 20, className = '', fallbackUrl }: PlatformIconProps) {
+export function PlatformIcon({ slug, color = '#6C5CE7', title = '', size = 20, className = '', fallbackUrl }: PlatformIconProps) {
   const [error, setError] = useState(false);
 
-  function getDomainInitial(url?: string): string {
-    if (!url || url === '#') return 'C';
-    try {
-      const hostname = new URL(url).hostname.replace(/^www\./, '');
-      return hostname.charAt(0).toUpperCase();
-    } catch {
-      const clean = url.replace(/^(https?:\/\/)?(www\.)?/, '');
-      return clean.charAt(0).toUpperCase() || 'C';
-    }
-  }
+  // Normalizza colore aggiungendo fallback per il brand color base se assente
+  const finalColor = color.startsWith('#') ? color : `#${color}`;
+  const hexColor = color.replace('#', '');
 
-  if (error || !slug) {
-    const initial = getDomainInitial(fallbackUrl);
-    // Render custom premium initial badge
+  if (error || !slug || slug === 'link') {
     return (
       <div
-        style={{ width: `${size + 12}px`, height: `${size + 12}px` }}
-        className={`flex items-center justify-center rounded-lg bg-[rgba(108,92,231,0.12)] text-[#6c5ce7] font-bold text-sm font-sans ${className}`}
-        title={fallbackUrl}
+        className={className}
+        style={{
+          width: 36, height: 36, borderRadius: 8,
+          background: finalColor + '18',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: 'Outfit, sans-serif', fontWeight: 800,
+          fontSize: 16, color: finalColor, flexShrink: 0
+        }}
+        title={title || fallbackUrl}
       >
-        {initial}
+        {title?.charAt(0)?.toUpperCase() || '?'}
       </div>
     );
   }
 
-  const c = color ? color.replace('#', '') : 'ffffff';
-  const src = `https://cdn.simpleicons.org/${slug}/${c}`;
+  const src = `https://cdn.simpleicons.org/${slug}/${hexColor}`;
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      alt={slug}
-      width={size}
-      height={size}
-      className={`object-contain ${className}`}
-      onError={() => setError(true)}
-      loading="lazy"
-    />
+    <div
+      className={className}
+      style={{
+        width: 36, height: 36, borderRadius: 8,
+        background: finalColor + '18',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+      }}
+      title={title}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={slug}
+        width={size}
+        height={size}
+        style={{ width: size, height: size, objectFit: 'contain' }}
+        onError={() => setError(true)}
+        loading="lazy"
+      />
+    </div>
   );
 }
