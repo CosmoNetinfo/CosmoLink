@@ -382,9 +382,22 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="w-full max-w-6xl mx-auto px-6 py-8 border-t border-[hsl(240_15%_18%)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[hsl(240_5%_48%)] bg-[hsl(240_25%_4%)]">
+      <footer className="w-full max-w-6xl mx-auto px-6 py-8 border-t border-[hsl(240_15%_18%)] flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[hsl(240_5%_48%)] bg-[hsl(240_25%_4%)]">
         <Logo size="sm" />
-        <p>© 2026 CosmoLink. Tutti i diritti riservati.</p>
+        <div className="flex flex-col sm:items-end items-center gap-1">
+          <p>© 2026 CosmoLink. Tutti i diritti riservati.</p>
+          <p className="text-xs opacity-80">
+            Realizzato da{' '}
+            <a
+              href="https://www.cosmonet.info/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline font-bold text-indigo-400"
+            >
+              CosmoNet — Daniele Spalletti
+            </a>
+          </p>
+        </div>
       </footer>
     </div>
   );

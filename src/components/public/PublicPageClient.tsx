@@ -304,6 +304,33 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
             );
           })}
         </div>
+
+        {/* Viral CTA Button */}
+        <a
+          href={`https://cosmolink.app/auth/register?utm_source=public_page&utm_medium=cta&utm_campaign=viral&ref=${profile.username}`}
+          className="w-full max-w-[320px] sm:max-w-[280px] hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 10,
+            margin: '24px auto 0',
+            padding: '13px 24px',
+            borderRadius: 14,
+            background: 'linear-gradient(135deg, #6c5ce7, #00cec9)',
+            color: '#fff',
+            fontFamily: 'Outfit, sans-serif',
+            fontWeight: 700,
+            fontSize: 14,
+            textDecoration: 'none',
+            boxShadow: '0 4px 20px rgba(108,92,231,0.35)',
+            width: '100%',
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/cosmolink-logo.png" height={20} style={{ width: 'auto', height: '20px' }} alt="CosmoLink Logo" />
+          <span>Crea il tuo CosmoLink gratis →</span>
+        </a>
       </div>
 
       {/* Footer */}
@@ -311,11 +338,27 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
-        className="py-6 flex flex-col items-center gap-2"
+        className="py-8 flex flex-col items-center gap-3 w-full text-center"
       >
         <Logo size="sm" />
-        <p className="text-[10px] opacity-30">
+        {profile.plan !== 'pro' && (
+          <p className="text-xs font-semibold tracking-wider opacity-60">
+            Powered by CosmoLink
+          </p>
+        )}
+        <p className="text-xs opacity-40">
           Il tuo universo di link
+        </p>
+        <p className="text-xs opacity-60 mt-1">
+          Realizzato da{' '}
+          <a
+            href="https://www.cosmonet.info/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline font-bold text-indigo-400"
+          >
+            CosmoNet — Daniele Spalletti
+          </a>
         </p>
       </motion.footer>
     </div>

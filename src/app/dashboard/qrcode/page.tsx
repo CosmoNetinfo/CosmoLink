@@ -127,8 +127,8 @@ export default function QrCodePage() {
             {/* Mascot toggle */}
             <div className="flex items-center justify-between py-2 border-b border-[hsl(240_15%_18%)]">
               <div>
-                <p className="text-xs font-medium text-[hsl(240_10%_98%)]">Mostra Mascotte al centro</p>
-                <p className="text-[10px] text-[hsl(240_5%_70%)]">Aggiunge l'icona aliena blu al centro del codice</p>
+                <p className="text-xs font-medium text-[hsl(240_10%_98%)]">Mostra logo CosmoNet al centro</p>
+                <p className="text-[10px] text-[hsl(240_5%_70%)]">Aggiunge il logo CosmoNet al centro del codice</p>
               </div>
               <button
                 onClick={() => setShowMascot(!showMascot)}
@@ -188,11 +188,11 @@ export default function QrCodePage() {
               imageSettings={
                 showMascot
                   ? {
-                      src: '/mascot-logo.png',
+                      src: '/cosmonet-logo-qr.png',
                       x: undefined,
                       y: undefined,
-                      height: 40,
-                      width: 40,
+                      height: 44,
+                      width: 44,
                       excavate: true,
                     }
                   : undefined
@@ -211,11 +211,11 @@ export default function QrCodePage() {
               imageSettings={
                 showMascot
                   ? {
-                      src: '/mascot-logo.png',
+                      src: '/cosmonet-logo-qr.png',
                       x: undefined,
                       y: undefined,
-                      height: 200,
-                      width: 200,
+                      height: 220,
+                      width: 220,
                       excavate: true,
                     }
                   : undefined

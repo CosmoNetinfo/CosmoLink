@@ -9,12 +9,12 @@ interface LogoProps {
 
 export function Logo({ size = 'md', showText = true, className = '', href = '/' }: LogoProps) {
   const heights = {
-    sm: 24,
-    md: 36,
-    lg: 48,
+    sm: 32,
+    md: 48,
+    lg: 64,
   };
 
-  const h = heights[size] || 36;
+  const h = heights[size] || 48;
 
   return (
     <a href={href} className={`inline-flex select-none ${className}`} style={{ textDecoration: 'none' }}>
