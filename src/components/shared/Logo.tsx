@@ -9,21 +9,21 @@ interface LogoProps {
 
 export function Logo({ size = 'md', showText = true, className = '' }: LogoProps) {
   const sizes = {
-    sm: { icon: 28, text: 'text-lg' },
-    md: { icon: 36, text: 'text-xl' },
-    lg: { icon: 48, text: 'text-3xl' },
+    sm: { iconWidth: 24, iconHeight: 24, text: 'text-base sm:text-lg' },
+    md: { iconWidth: 24, iconHeight: 24, text: 'text-lg sm:text-xl' },
+    lg: { iconWidth: 32, iconHeight: 32, text: 'text-2xl sm:text-3xl' },
   };
 
   const s = sizes[size];
 
   return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
+    <div className={`flex items-center gap-2 ${className}`}>
       <Image
-        src={process.env.NEXT_PUBLIC_MASCOT_LOGO_URL || '/mascot-logo.png'}
-        alt="CosmoLink"
-        width={s.icon}
-        height={s.icon}
-        className="object-contain"
+        src="/mascot-logo.png"
+        alt="CosmoLink Mascot Logo"
+        width={s.iconWidth}
+        height={s.iconHeight}
+        className="object-contain block p-0 m-0 border-0 bg-transparent"
         priority
       />
       {showText && (

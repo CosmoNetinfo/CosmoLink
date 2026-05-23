@@ -113,28 +113,14 @@ export default function Home() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex justify-center relative"
+          className="flex justify-center relative w-full"
         >
-          {/* Floating badge details */}
-          <div className="absolute top-10 left-4 bg-[hsl(240_22%_8%)/0.8] border border-[hsl(240_15%_18%)] rounded-2xl p-3 shadow-xl backdrop-blur-md flex items-center gap-2.5 z-10 animate-bounce-slow">
-            <div className="w-8 h-8 rounded-full bg-[hsl(263_90%_64%)/0.2] flex items-center justify-center text-[hsl(263_90%_75%)] font-bold">
-              🛸
-            </div>
-            <div>
-              <p className="text-[10px] text-[hsl(240_5%_70%)]">Visualizzazioni live</p>
-              <p className="text-sm font-bold text-white">4.2M+</p>
-            </div>
-          </div>
-
-          <div className="relative w-[320px] sm:w-[380px] h-[380px] sm:h-[440px] flex items-center justify-center rounded-[40px] border border-[hsl(240_15%_18%)] bg-[hsl(240_20%_8%)] shadow-2xl overflow-hidden p-6">
-            <div className="absolute inset-0 bg-gradient-to-b from-[hsl(263_90%_64%)/0.05] to-transparent pointer-events-none" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/mascot.png"
-              alt="CosmoLink Mascot"
-              className="w-full max-w-[280px] sm:max-w-[340px] object-contain drop-shadow-[0_0_35px_rgba(108,92,231,0.25)]"
-            />
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/mascot.png"
+            alt="CosmoLink Mascot"
+            className="w-full max-w-[280px] sm:max-w-[400px] h-auto object-contain drop-shadow-[0_0_50px_rgba(108,92,231,0.2)]"
+          />
         </motion.div>
       </main>
 
