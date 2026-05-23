@@ -13,6 +13,8 @@ import {
   ArrowRight,
   ShieldCheck,
   CheckCircle2,
+  Check,
+  Zap,
 } from 'lucide-react';
 
 export default function Home() {
@@ -156,6 +158,222 @@ export default function Home() {
               Genera codici QR vettoriali con l'iconica mascotte cosmica aliena al centro da stampare e scaricare.
             </p>
           </Card>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="w-full py-20 bg-[hsl(240_20%_6%)] border-t border-[hsl(240_15%_18%)] relative">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-[hsl(240_10%_98%)] to-[hsl(263_90%_75%)] bg-clip-text text-transparent">
+              Scegli il tuo piano
+            </h2>
+            <p className="text-sm md:text-base text-[hsl(240_5%_70%)]">
+              Inizia gratis, passa a PRO quando vuoi. Nessun contratto, cancelli quando vuoi.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch mb-12">
+            {/* Card 1 - Free */}
+            <Card className="p-8 flex flex-col justify-between bg-[hsl(240_25%_4%)] border-[hsl(240_15%_15%)] hover:border-[hsl(240_15%_25%)] transition-all rounded-2xl shadow-xl relative overflow-hidden">
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-2">Free</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-black text-white">€0</span>
+                    <span className="text-sm text-[hsl(240_5%_60%)]">per sempre</span>
+                  </div>
+                </div>
+                
+                <hr className="border-[hsl(240_15%_15%)]" />
+                
+                <ul className="space-y-3.5 text-sm text-[hsl(240_5%_80%)]">
+                  <li className="flex items-center gap-2.5">
+                    <Check size={16} className="text-emerald-400 shrink-0" />
+                    <span>5 link</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Check size={16} className="text-emerald-400 shrink-0" />
+                    <span>4 temi</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Check size={16} className="text-emerald-400 shrink-0" />
+                    <span>QR Code con mascotte</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Check size={16} className="text-emerald-400 shrink-0" />
+                    <span>Analytics base</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Check size={16} className="text-emerald-400 shrink-0" />
+                    <span>Upload avatar</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Check size={16} className="text-emerald-400 shrink-0" />
+                    <span>Link social</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div className="mt-8">
+                <Link href="/auth/register" className="w-full block">
+                  <Button variant="secondary" className="w-full py-6 rounded-xl font-semibold border-[hsl(240_15%_20%)] hover:bg-white/5 transition-all text-white">
+                    Inizia gratis
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+
+            {/* Card 2 - PRO Mensile */}
+            <Card className="p-8 flex flex-col justify-between bg-[hsl(240_25%_4%)] border-[hsl(240_15%_15%)] hover:border-[hsl(240_15%_25%)] transition-all rounded-2xl shadow-xl relative overflow-hidden">
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-2">PRO</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-black text-white">€4,99</span>
+                    <span className="text-sm text-[hsl(240_5%_60%)]">al mese</span>
+                  </div>
+                </div>
+
+                <hr className="border-[hsl(240_15%_15%)]" />
+
+                <ul className="space-y-3.5 text-sm text-[hsl(240_5%_80%)]">
+                  <li className="text-[hsl(263_90%_75%)] text-xs font-semibold uppercase tracking-wider mb-2">Tutto Free +</li>
+                  <li className="flex items-center gap-2.5">
+                    <Zap size={16} className="text-purple-400 shrink-0" />
+                    <span>Link illimitati</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Zap size={16} className="text-purple-400 shrink-0" />
+                    <span>Tutti i 10 temi</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Zap size={16} className="text-purple-400 shrink-0" />
+                    <span>Personalizzazione completa</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Zap size={16} className="text-purple-400 shrink-0" />
+                    <span>Analytics avanzate</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Zap size={16} className="text-purple-400 shrink-0" />
+                    <span>Embed video YouTube/Vimeo</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Zap size={16} className="text-purple-400 shrink-0" />
+                    <span>Link programmati</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Zap size={16} className="text-purple-400 shrink-0" />
+                    <span>QR personalizzato</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <Zap size={16} className="text-purple-400 shrink-0" />
+                    <span>Rimozione branding</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-8">
+                <a href="https://wa.me/393517064080?text=Ciao,%20voglio%20attivare%20CosmoLink%20PRO%20mensile" target="_blank" rel="noopener noreferrer" className="w-full block">
+                  <Button className="w-full py-6 rounded-xl font-semibold bg-gradient-to-r from-[hsl(263_90%_64%)] to-[hsl(263_90%_50%)] hover:from-[hsl(263_90%_70%)] hover:to-[hsl(263_90%_55%)] transition-all text-white border-0">
+                    Passa a PRO
+                  </Button>
+                </a>
+              </div>
+            </Card>
+
+            {/* Card 3 - PRO Annuale */}
+            <div className="relative rounded-2xl p-[1.5px] bg-gradient-to-br from-purple-500 via-indigo-500 to-cyan-500 shadow-[0_0_30px_rgba(168,85,247,0.15)] flex flex-col justify-between">
+              <div className="h-full w-full bg-[hsl(240_25%_4%)] rounded-[14px] p-8 flex flex-col justify-between relative overflow-hidden">
+                {/* Purple subtle glow back */}
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-purple-500/10 blur-2xl pointer-events-none" />
+                
+                <div className="space-y-6">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-2">PRO Annuale</h3>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl font-black text-white">€39,99</span>
+                        <span className="text-sm text-[hsl(240_5%_60%)]">all'anno</span>
+                      </div>
+                      <p className="text-xs text-[hsl(240_5%_55%)] mt-1">equivale a €3,33/mese</p>
+                    </div>
+                    <span className="bg-gradient-to-r from-purple-500 to-cyan-500 text-[10px] font-bold text-white px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                      CONSIGLIATO
+                    </span>
+                  </div>
+
+                  <div className="bg-[rgba(168,85,247,0.08)] border border-purple-500/20 rounded-xl p-3 flex items-center gap-2">
+                    <span className="text-base">🔥</span>
+                    <span className="text-xs font-semibold text-purple-300">Risparmi €20 — 2 mesi gratis</span>
+                  </div>
+
+                  <hr className="border-[hsl(240_15%_15%)]" />
+
+                  <ul className="space-y-3.5 text-sm text-[hsl(240_5%_80%)]">
+                    <li className="text-[hsl(263_90%_75%)] text-xs font-semibold uppercase tracking-wider mb-2">Stesse features del PRO Mensile</li>
+                    <li className="flex items-center gap-2.5">
+                      <Zap size={16} className="text-purple-400 shrink-0" />
+                      <span>Link illimitati</span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <Zap size={16} className="text-purple-400 shrink-0" />
+                      <span>Tutti i 10 temi</span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <Zap size={16} className="text-purple-400 shrink-0" />
+                      <span>Personalizzazione completa</span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <Zap size={16} className="text-purple-400 shrink-0" />
+                      <span>Analytics avanzate</span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <Zap size={16} className="text-purple-400 shrink-0" />
+                      <span>Embed video YouTube/Vimeo</span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <Zap size={16} className="text-purple-400 shrink-0" />
+                      <span>Link programmati</span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <Zap size={16} className="text-purple-400 shrink-0" />
+                      <span>QR personalizzato</span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <Zap size={16} className="text-purple-400 shrink-0" />
+                      <span>Rimozione branding</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="mt-8">
+                  <a href="https://wa.me/393517064080?text=Ciao,%20voglio%20attivare%20CosmoLink%20PRO%20annuale" target="_blank" rel="noopener noreferrer" className="w-full block">
+                    <Button className="w-full py-6 rounded-xl font-semibold bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90 transition-all text-white border-0 shadow-lg shadow-purple-500/20">
+                      Passa a PRO Annuale
+                    </Button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Promo Launch Banner */}
+          <div className="mt-12 bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 rounded-[14px] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-white/5 backdrop-blur-[1px] pointer-events-none" />
+            <div className="relative z-10 space-y-1 text-center md:text-left">
+              <h4 className="text-lg md:text-xl font-bold text-white">🚀 Offerta lancio</h4>
+              <p className="text-sm text-white/90">
+                Per i primi 3 mesi il piano PRO Annuale è a €29,99. Scrivici su WhatsApp per approfittarne.
+              </p>
+            </div>
+            <a href="https://wa.me/393517064080?text=Ciao,%20voglio%20attivare%20l%27offerta%20lancio%20CosmoLink%20PRO%20annuale" target="_blank" rel="noopener noreferrer" className="relative z-10 w-full md:w-auto shrink-0">
+              <Button className="w-full md:w-auto px-6 py-5 rounded-lg bg-white text-purple-700 hover:bg-white/90 font-bold transition-all border-0 shadow-md">
+                Approfitta dell'offerta
+              </Button>
+            </a>
+          </div>
         </div>
       </section>
 

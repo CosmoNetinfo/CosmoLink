@@ -24,10 +24,10 @@ export function PlatformIcon({ slug, color = '#6C5CE7', title = '', size = 20, c
         className={className}
         style={{
           width: 36, height: 36, borderRadius: 8,
-          background: finalColor + '18',
+          background: 'rgba(108,92,231,0.15)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontFamily: 'Outfit, sans-serif', fontWeight: 800,
-          fontSize: 16, color: finalColor, flexShrink: 0
+          fontSize: 16, color: '#6c5ce7', flexShrink: 0
         }}
         title={title || fallbackUrl}
       >
