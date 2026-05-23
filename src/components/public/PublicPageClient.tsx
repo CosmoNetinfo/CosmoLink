@@ -327,8 +327,6 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
             width: '100%',
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/cosmolink-logo.png" height={20} style={{ width: 'auto', height: '20px' }} alt="CosmoLink Logo" />
           <span>Crea il tuo CosmoLink gratis →</span>
         </a>
       </div>
@@ -340,22 +338,22 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
         transition={{ delay: 0.8 }}
         className="py-8 flex flex-col items-center gap-3 w-full text-center"
       >
-        <Logo size="sm" />
+        <Logo size="md" />
         {profile.plan !== 'pro' && (
-          <p className="text-xs font-semibold tracking-wider opacity-60">
+          <p className="text-sm font-semibold tracking-wider opacity-70">
             Powered by CosmoLink
           </p>
         )}
-        <p className="text-xs opacity-40">
+        <p className="text-sm opacity-50">
           Il tuo universo di link
         </p>
-        <p className="text-xs opacity-60 mt-1">
+        <p className="text-sm opacity-80 mt-1">
           Realizzato da{' '}
           <a
             href="https://www.cosmonet.info/"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline font-bold text-indigo-400"
+            className="hover:underline font-extrabold underline decoration-white/40"
           >
             CosmoNet — Daniele Spalletti
           </a>
