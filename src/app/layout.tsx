@@ -44,6 +44,11 @@ export const metadata: Metadata = {
   description:
     "CosmoLink è la piattaforma link-in-bio definitiva: personalizza la tua pagina, traccia le visite, condividi i tuoi link in stile cosmico.",
   keywords: ["link in bio", "linktree alternative", "cosmolink", "link aggregator"],
+  icons: {
+    icon: '/mascot-logo.png',
+    apple: '/mascot-logo.png',
+    shortcut: '/mascot-logo.png',
+  }
 };
 
 export default function RootLayout({

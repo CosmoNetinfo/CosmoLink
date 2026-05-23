@@ -212,6 +212,10 @@ export default function Home() {
                     <Check size={16} className="text-emerald-400 shrink-0" />
                     <span>Link social</span>
                   </li>
+                  <li className="flex items-center gap-2.5">
+                    <Check size={16} className="text-emerald-400 shrink-0" />
+                    <span className="font-semibold text-emerald-400">Nessuna pubblicità, mai</span>
+                  </li>
                 </ul>
               </div>
               
@@ -245,7 +249,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Zap size={16} className="text-purple-400 shrink-0" />
-                    <span>Tutti i 10 temi</span>
+                    <span>Tutti i 16 temi</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Zap size={16} className="text-purple-400 shrink-0" />
@@ -319,7 +323,7 @@ export default function Home() {
                     </li>
                     <li className="flex items-center gap-2.5">
                       <Zap size={16} className="text-purple-400 shrink-0" />
-                      <span>Tutti i 10 temi</span>
+                      <span>Tutti i 16 temi</span>
                     </li>
                     <li className="flex items-center gap-2.5">
                       <Zap size={16} className="text-purple-400 shrink-0" />

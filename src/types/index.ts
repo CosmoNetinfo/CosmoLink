@@ -52,8 +52,8 @@ export interface ThemeConfig {
     value: string; // HSL color or CSS gradient or image URL
   };
   buttons: {
-    style: 'solid' | 'outline' | 'soft' | 'glass';
-    radius: 'none' | 'md' | 'full';
+    style: 'solid' | 'outline' | 'glass' | 'shadow' | 'gradient';
+    radius: 'none' | 'sm' | 'md' | 'full';
     bg_color?: string; // HSL string (pro only)
     text_color?: string; // HSL string (pro only)
     border_color?: string; // HSL string (pro only)
@@ -62,12 +62,15 @@ export interface ThemeConfig {
   typography: {
     font_family: 'outfit' | 'dm-sans' | 'syne' | 'playfair' | 'space-mono' | 'nunito';
     text_color: string; // HSL string
+    bio_color?: string; // HSL string (pro only)
     accent_color: string; // HSL string
   };
   avatar_ring: {
     enabled: boolean;
     color: string; // HSL string
+    thickness?: '0px' | '2px' | '3px' | '4px'; // pro only
   };
+  socials_style?: 'brand' | 'white' | 'black';
 }
 
 export type CustomTheme = ThemeConfig;

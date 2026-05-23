@@ -6,15 +6,16 @@ import { PlatformIcon } from '@/components/shared/PlatformIcon';
 import { trackView, trackClick } from '@/lib/analytics';
 import { themeToCSS } from '@/lib/resolve-theme';
 import { Logo } from '@/components/shared/Logo';
-import type { Profile, Link, ThemeConfig } from '@/types';
+import type { Profile, Link, ThemeConfig, Platform } from '@/types';
 
 interface PublicPageClientProps {
   profile: Profile;
   links: Link[];
   themeConfig: ThemeConfig | null;
+  platforms?: Platform[];
 }
 
-export default function PublicPageClient({ profile, links, themeConfig }: PublicPageClientProps) {
+export default function PublicPageClient({ profile, links, themeConfig, platforms = [] }: PublicPageClientProps) {
   // Track page view on mount
   useEffect(() => {
     trackView(profile.id);
@@ -28,10 +29,12 @@ export default function PublicPageClient({ profile, links, themeConfig }: Public
 
   // Build background style
   const bgStyle = useMemo(() => {
-    if (!themeConfig) {
-      return {
-        background: 'linear-gradient(135deg, hsl(263 90% 12%) 0%, hsl(240 25% 4%) 50%, hsl(190 90% 8%) 100%)',
-      };
+    const defaultBg = {
+      background: 'linear-gradient(135deg, hsl(263 90% 12%) 0%, hsl(240 25% 4%) 50%, hsl(190 90% 8%) 100%)',
+    };
+
+    if (!themeConfig || !themeConfig.background) {
+      return defaultBg;
     }
 
     if (themeConfig.background.type === 'solid') {
@@ -46,35 +49,62 @@ export default function PublicPageClient({ profile, links, themeConfig }: Public
       };
     }
 
-    return {};
+    return defaultBg;
   }, [themeConfig]);
 
   const textColor = themeConfig?.typography?.text_color || 'hsl(0 0% 98%)';
+  const bioColor = themeConfig?.typography?.bio_color || 'rgba(255, 255, 255, 0.6)';
   const accentColor = themeConfig?.typography?.accent_color || 'hsl(263 90% 64%)';
   const fontFamily = themeStyles['--theme-font'] || 'var(--font-outfit)';
   const btnRadius = themeStyles['--theme-btn-radius'] || '12px';
   const btnStyle = themeConfig?.buttons?.style || 'glass';
   const ringColor = themeConfig?.avatar_ring?.color || 'hsl(263 90% 64%)';
   const ringEnabled = themeConfig?.avatar_ring?.enabled ?? true;
+  const ringThickness = themeStyles['--theme-ring-thickness'] || '3px';
 
   function handleLinkClick(linkId: string) {
     trackClick(linkId, profile.id);
   }
 
   function getButtonClasses(): string {
-    const base = 'w-full py-3.5 px-6 flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]';
+    return 'w-full py-3.5 px-6 flex items-center gap-4 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] select-none cursor-pointer';
+  }
 
-    switch (btnStyle) {
-      case 'glass':
-        return `${base} bg-white/[0.06] backdrop-blur-md border border-white/[0.08] hover:bg-white/[0.12] hover:border-white/[0.15] shadow-lg shadow-black/20`;
-      case 'outline':
-        return `${base} bg-transparent border-2 border-white/20 hover:bg-white/[0.06] hover:border-white/40`;
-      case 'soft':
-        return `${base} bg-white/[0.1] hover:bg-white/[0.18]`;
-      case 'solid':
-      default:
-        return `${base} bg-white/[0.12] hover:bg-white/[0.2]`;
+  function getButtonStyle(): React.CSSProperties {
+    const style: React.CSSProperties = {
+      borderRadius: btnRadius,
+    };
+
+    const bg = themeStyles['--theme-btn-bg'] || 'rgba(255, 255, 255, 0.12)';
+    const text = themeStyles['--theme-btn-text'] || 'hsl(0 0% 98%)';
+    const border = themeStyles['--theme-btn-border'] || bg;
+
+    if (btnStyle === 'solid') {
+      style.background = bg;
+      style.color = text;
+      style.border = '1px solid transparent';
+    } else if (btnStyle === 'outline') {
+      style.background = 'transparent';
+      style.color = text;
+      style.border = `2px solid ${border || text}`;
+    } else if (btnStyle === 'glass') {
+      style.background = 'rgba(255, 255, 255, 0.06)';
+      style.backdropFilter = 'blur(12px)';
+      style.WebkitBackdropFilter = 'blur(12px)';
+      style.border = '1px solid rgba(255, 255, 255, 0.08)';
+      style.color = text;
+    } else if (btnStyle === 'shadow') {
+      style.background = bg;
+      style.color = text;
+      style.border = '2px solid #000000';
+      style.boxShadow = '4px 4px 0px 0px #000000';
+    } else if (btnStyle === 'gradient') {
+      style.background = bg.includes('gradient') ? bg : `linear-gradient(135deg, ${bg}, ${bg}cc)`;
+      style.color = text;
+      style.border = 'none';
     }
+
+    return style;
   }
 
   // Filter scheduled links
@@ -123,8 +153,8 @@ export default function PublicPageClient({ profile, links, themeConfig }: Public
               alt={profile.display_name || profile.username}
               className="w-24 h-24 rounded-full object-cover"
               style={{
-                boxShadow: ringEnabled
-                  ? `0 0 0 3px ${ringColor}, 0 0 20px ${ringColor}40`
+                boxShadow: ringEnabled && ringThickness !== '0px'
+                  ? `0 0 0 ${ringThickness} ${ringColor}, 0 0 20px ${ringColor}40`
                   : 'none',
               }}
             />
@@ -133,8 +163,8 @@ export default function PublicPageClient({ profile, links, themeConfig }: Public
               className="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold"
               style={{
                 background: `${accentColor}30`,
-                boxShadow: ringEnabled
-                  ? `0 0 0 3px ${ringColor}, 0 0 20px ${ringColor}40`
+                boxShadow: ringEnabled && ringThickness !== '0px'
+                  ? `0 0 0 ${ringThickness} ${ringColor}, 0 0 20px ${ringColor}40`
                   : 'none',
               }}
             >
@@ -169,7 +199,8 @@ export default function PublicPageClient({ profile, links, themeConfig }: Public
             initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="text-sm text-center opacity-70 max-w-sm mb-6"
+            className="text-sm text-center max-w-sm mb-6"
+            style={{ color: bioColor }}
           >
             {profile.bio}
           </motion.p>
@@ -183,17 +214,34 @@ export default function PublicPageClient({ profile, links, themeConfig }: Public
             transition={{ delay: 0.25, duration: 0.5 }}
             className="flex items-center gap-4 mb-8"
           >
-            {Object.entries(profile.social_links).map(([platform, url]) => (
-              <a
-                key={platform}
-                href={url as string}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="opacity-60 hover:opacity-100 transition-opacity"
-              >
-                <PlatformIcon slug={platform} size={22} fallbackUrl={url as string} />
-              </a>
-            ))}
+            {Object.entries(profile.social_links).map(([platform, url]) => {
+              const platObj = platforms.find((p) => p.slug === platform);
+              let iconColor = platObj?.brand_color || '#ffffff';
+              
+              const socialsStyle = themeConfig?.socials_style || 'brand';
+              if (socialsStyle === 'white') {
+                iconColor = '#ffffff';
+              } else if (socialsStyle === 'black') {
+                iconColor = '#000000';
+              }
+
+              return (
+                <a
+                  key={platform}
+                  href={url as string}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="opacity-80 hover:opacity-100 hover:scale-105 transition-all transform duration-200"
+                >
+                  <PlatformIcon
+                    slug={platform}
+                    size={20}
+                    color={iconColor}
+                    fallbackUrl={url as string}
+                  />
+                </a>
+              );
+            })}
           </motion.div>
         )}
 
@@ -239,9 +287,7 @@ export default function PublicPageClient({ profile, links, themeConfig }: Public
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3 + i * 0.05, duration: 0.4 }}
                 className={getButtonClasses()}
-                style={{
-                  borderRadius: btnRadius,
-                }}
+                style={getButtonStyle()}
               >
                 <PlatformIcon
                   slug={link.icon || ''}

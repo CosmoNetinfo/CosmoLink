@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import PublicPageClient from '@/components/public/PublicPageClient';
+import { resolveTheme } from '@/lib/resolve-theme';
 
 export const revalidate = 60; // ISR: regenerate every 60 seconds
 
@@ -73,18 +74,26 @@ export default async function UserPage({ params }: PageProps) {
     .eq('is_active', true)
     .order('position');
 
-  // Load theme config
-  const { data: themeData } = await supabase
+  // Load all themes so resolveTheme can find the right preset
+  const { data: themes } = await supabase
     .from('themes')
-    .select('*')
-    .eq('slug', profile.theme_slug)
-    .single();
+    .select('*');
+
+  // Load all platforms to resolve brand colors in the socials bar
+  const { data: platforms } = await supabase
+    .from('platforms')
+    .select('*');
+
+  // Properly resolve theme: handles PRO custom_theme, flat DB configs, and preset normalization
+  const themeConfig = resolveTheme(profile, themes || []);
 
   return (
     <PublicPageClient
       profile={profile}
       links={links || []}
-      themeConfig={themeData?.config || null}
+      themeConfig={themeConfig}
+      platforms={platforms || []}
     />
   );
 }
+
