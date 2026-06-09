@@ -49,6 +49,11 @@ export const metadata: Metadata = {
     apple: '/mascot-favicon.png',
     shortcut: '/mascot-favicon.png',
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "CosmoLink",
+  },
   openGraph: {
     title: "CosmoLink — Il tuo universo di link",
     description:
