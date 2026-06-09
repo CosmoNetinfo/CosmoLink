@@ -62,6 +62,11 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
   const ringEnabled = themeConfig?.avatar_ring?.enabled ?? true;
   const ringThickness = themeStyles['--theme-ring-thickness'] || '3px';
 
+  const isDarkText = useMemo(() => {
+    const txt = (themeStyles['--theme-text-color'] || textColor).toLowerCase();
+    return txt === '#000000' || txt === '#0f172a' || txt === '#1c1917' || txt === '#3b0764' || txt === '#0c4a6e' || txt === '#880e4f' || txt === '#052e16';
+  }, [themeStyles, textColor]);
+
   function handleLinkClick(linkId: string) {
     trackClick(linkId, profile.id);
   }
@@ -83,15 +88,21 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
       style.background = bg;
       style.color = text;
       style.border = '1px solid transparent';
+      style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
     } else if (btnStyle === 'outline') {
       style.background = 'transparent';
       style.color = text;
       style.border = `2px solid ${border || text}`;
     } else if (btnStyle === 'glass') {
-      style.background = 'rgba(255, 255, 255, 0.06)';
-      style.backdropFilter = 'blur(12px)';
-      style.WebkitBackdropFilter = 'blur(12px)';
-      style.border = '1px solid rgba(255, 255, 255, 0.08)';
+      if (isDarkText) {
+        style.background = 'rgba(0, 0, 0, 0.05)';
+        style.border = '1px solid rgba(0, 0, 0, 0.08)';
+      } else {
+        style.background = 'rgba(255, 255, 255, 0.08)';
+        style.border = '1px solid rgba(255, 255, 255, 0.12)';
+      }
+      style.backdropFilter = 'blur(16px)';
+      style.WebkitBackdropFilter = 'blur(16px)';
       style.color = text;
     } else if (btnStyle === 'shadow') {
       style.background = bg;
@@ -102,6 +113,7 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
       style.background = bg.includes('gradient') ? bg : `linear-gradient(135deg, ${bg}, ${bg}cc)`;
       style.color = text;
       style.border = 'none';
+      style.boxShadow = '0 6px 20px rgba(0,0,0,0.15)';
     }
 
     return style;
@@ -231,12 +243,13 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
                   href={url as string}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="opacity-80 hover:opacity-100 hover:scale-105 transition-all transform duration-200"
+                  className="opacity-80 hover:opacity-100 hover:scale-110 transition-all transform duration-200"
                 >
                   <PlatformIcon
                     slug={platform}
-                    size={20}
+                    size={22}
                     color={iconColor}
+                    variant="clean"
                     fallbackUrl={url as string}
                   />
                 </a>
@@ -276,6 +289,10 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
               );
             }
 
+            // Determine monochrome icon color that matches the button text color unless a custom color is specified
+            const btnTextColor = themeStyles['--theme-btn-text'] || 'hsl(0 0% 98%)';
+            const iconColor = link.icon_color || btnTextColor;
+
             return (
               <motion.a
                 key={link.id}
@@ -291,12 +308,13 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
               >
                 <PlatformIcon
                   slug={link.icon || ''}
-                  color={link.icon_color?.replace('#', '') || undefined}
-                  size={22}
+                  color={iconColor}
+                  size={20}
+                  variant="clean"
                   fallbackUrl={link.url}
                   title={link.title}
                 />
-                <span className="flex-1 text-sm font-medium">{link.title}</span>
+                <span className="flex-1 text-sm font-semibold">{link.title}</span>
                 {link.is_featured && (
                   <span className="text-xs px-2 py-0.5 rounded-full bg-white/10">⭐</span>
                 )}

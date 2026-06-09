@@ -9,31 +9,52 @@ interface PlatformIconProps {
   size?: number;
   className?: string;
   fallbackUrl?: string; // kept for compatibility
+  variant?: 'classic' | 'clean' | 'circle';
 }
 
-export function PlatformIcon({ slug, color = '#6C5CE7', title = '', size = 20, className = '', fallbackUrl }: PlatformIconProps) {
+export function PlatformIcon({
+  slug,
+  color = '#6C5CE7',
+  title = '',
+  size = 20,
+  className = '',
+  fallbackUrl,
+  variant = 'classic'
+}: PlatformIconProps) {
   const [error, setError] = useState(false);
 
   // Normalizza colore aggiungendo fallback per il brand color base se assente
   const finalColor = color.startsWith('#') ? color : `#${color}`;
   const hexColor = color.replace('#', '');
 
+  const wrapperStyle = React.useMemo((): React.CSSProperties => {
+    if (variant === 'clean') {
+      return {
+        width: size,
+        height: size,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      };
+    }
+
+    return {
+      width: 38,
+      height: 38,
+      borderRadius: variant === 'circle' ? '50%' : '10px',
+      background: finalColor + '15',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+      border: variant === 'circle' ? `1px solid ${finalColor}25` : 'none',
+    };
+  }, [variant, size, finalColor]);
+
   if (slug === 'linkedin') {
     return (
-      <div
-        className={className}
-        style={{
-          width: 36,
-          height: 36,
-          borderRadius: 8,
-          background: finalColor + '18',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-        title={title}
-      >
+      <div className={className} style={wrapperStyle} title={title}>
         <svg
           role="img"
           viewBox="0 0 24 24"
@@ -50,19 +71,21 @@ export function PlatformIcon({ slug, color = '#6C5CE7', title = '', size = 20, c
   }
 
   if (error || !slug || slug === 'link') {
+    const letter = title?.charAt(0)?.toUpperCase() || '?';
     return (
       <div
         className={className}
         style={{
-          width: 36, height: 36, borderRadius: 8,
-          background: 'rgba(108,92,231,0.15)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontFamily: 'Outfit, sans-serif', fontWeight: 800,
-          fontSize: 16, color: '#6c5ce7', flexShrink: 0
+          ...wrapperStyle,
+          fontFamily: 'Outfit, sans-serif',
+          fontWeight: 800,
+          fontSize: variant === 'clean' ? 14 : 16,
+          color: finalColor,
+          background: variant === 'clean' ? 'transparent' : wrapperStyle.background,
         }}
         title={title || fallbackUrl}
       >
-        {title?.charAt(0)?.toUpperCase() || '?'}
+        {letter}
       </div>
     );
   }
@@ -71,15 +94,7 @@ export function PlatformIcon({ slug, color = '#6C5CE7', title = '', size = 20, c
   const src = `https://cdn.simpleicons.org/${mappedSlug}/${hexColor}`;
 
   return (
-    <div
-      className={className}
-      style={{
-        width: 36, height: 36, borderRadius: 8,
-        background: finalColor + '18',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-      }}
-      title={title}
-    >
+    <div className={className} style={wrapperStyle} title={title}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
