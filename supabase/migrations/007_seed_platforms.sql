@@ -25,6 +25,7 @@ INSERT INTO platforms (slug, name, brand_color, category, domain_patterns) VALUE
 ('odysee','Odysee','#EF1970','video',ARRAY['odysee.com','lbry.tv']),
 -- MUSICA
 ('spotify','Spotify','#1DB954','music',ARRAY['spotify.com','open.spotify.com']),
+('amazonmusic','Amazon Music','#00A8E1','music',ARRAY['music.amazon.com','music.amazon.it']),
 ('applemusic','Apple Music','#FC3C44','music',ARRAY['music.apple.com']),
 ('soundcloud','SoundCloud','#FF3300','music',ARRAY['soundcloud.com']),
 ('bandcamp','Bandcamp','#1DA0C3','music',ARRAY['bandcamp.com']),

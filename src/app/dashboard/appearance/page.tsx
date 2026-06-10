@@ -98,6 +98,7 @@ export default function AppearancePage() {
   const [avatarRingColor, setAvatarRingColor] = useState('#6c5ce7');
   const [avatarRingThickness, setAvatarRingThickness] = useState<'0px' | '2px' | '3px' | '4px'>('0px');
   const [socialsStyle, setSocialsStyle] = useState<'brand' | 'white' | 'black'>('brand');
+  const [addedSlugs, setAddedSlugs] = useState<string[]>([]);
 
   const supabase = createClient();
 
@@ -168,6 +169,17 @@ export default function AppearancePage() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // Filtra le piattaforme visibili (popolari di default o già valorizzate o aggiunte dall'utente)
+  const visiblePlatforms = useMemo(() => {
+    const defaultPopularSlugs = ['instagram', 'tiktok', 'youtube', 'spotify', 'amazonmusic', 'applemusic', 'facebook', 'twitter', 'linkedin'];
+    return platforms.filter((plat) => {
+      const isDefault = defaultPopularSlugs.includes(plat.slug);
+      const hasValue = !!socials[plat.slug];
+      const wasAdded = addedSlugs.includes(plat.slug);
+      return isDefault || hasValue || wasAdded;
+    });
+  }, [platforms, socials, addedSlugs]);
 
   // Handle avatar upload with 200x200 resize
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -1071,29 +1083,60 @@ export default function AppearancePage() {
 
           <div className="space-y-4">
             <p className="text-xs text-[hsl(240_5%_70%)]">
-              Questi link appariranno come icone sotto la tua biografia per un accesso rapido.
+              Inserisci i tuoi profili social. Appariranno come icone sotto la tua biografia per un accesso rapido.
             </p>
-            {platforms.slice(0, 5).map((plat) => (
-              <div key={plat.slug} className="flex items-center gap-3">
-                <PlatformIcon slug={plat.slug} size={20} color={plat.brand_color} className="shrink-0" />
-                <span className="text-xs font-medium text-[hsl(240_10%_98%)] w-24 shrink-0">{plat.name}</span>
-                <input
-                  type="url"
-                  placeholder={`Username o link ${plat.name}`}
-                  value={socials[plat.slug] || ''}
-                  onChange={(e) => {
-                    const newSocials = { ...socials };
-                    if (e.target.value) {
-                      newSocials[plat.slug] = e.target.value;
-                    } else {
-                      delete newSocials[plat.slug];
+            
+            <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+              {visiblePlatforms.map((plat) => (
+                <div key={plat.slug} className="flex items-center gap-3">
+                  <PlatformIcon slug={plat.slug} size={20} color={plat.brand_color} className="shrink-0" />
+                  <span className="text-xs font-medium text-[hsl(240_10%_98%)] w-24 shrink-0">{plat.name}</span>
+                  <input
+                    type="url"
+                    placeholder={plat.slug === 'amazonmusic' || plat.slug === 'spotify' || plat.slug === 'applemusic' || plat.slug === 'youtube'
+                      ? `Link al profilo o playlist ${plat.name}`
+                      : `Username o link ${plat.name}`
                     }
-                    setSocials(newSocials);
-                  }}
-                  className="flex-1 rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-3 py-2 text-xs text-[hsl(240_10%_98%)] placeholder:text-[hsl(240_5%_48%)] focus:outline-none focus:ring-1 focus:ring-[hsl(263_90%_64%)] transition-all"
-                />
-              </div>
-            ))}
+                    value={socials[plat.slug] || ''}
+                    onChange={(e) => {
+                      const newSocials = { ...socials };
+                      if (e.target.value) {
+                        newSocials[plat.slug] = e.target.value;
+                      } else {
+                        delete newSocials[plat.slug];
+                      }
+                      setSocials(newSocials);
+                    }}
+                    className="flex-1 rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-3 py-2 text-xs text-[hsl(240_10%_98%)] placeholder:text-[hsl(240_5%_48%)] focus:outline-none focus:ring-1 focus:ring-[hsl(263_90%_64%)] transition-all"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Dropdown to add other platforms */}
+            <div className="flex items-center gap-3 pt-3 border-t border-[hsl(240_15%_18%)]">
+              <span className="text-xs font-medium text-[hsl(240_5%_70%)] shrink-0">Mostra altre piattaforme:</span>
+              <select
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val && !addedSlugs.includes(val)) {
+                    setAddedSlugs([...addedSlugs, val]);
+                  }
+                  e.target.value = ''; // Reset select
+                }}
+                className="flex-1 rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-3 py-2 text-xs text-[hsl(240_10%_98%)] focus:outline-none focus:ring-1 focus:ring-[hsl(263_90%_64%)]"
+              >
+                <option value="">-- Seleziona e aggiungi --</option>
+                {platforms
+                  .filter((plat) => !visiblePlatforms.some((vp) => vp.slug === plat.slug) && plat.slug !== 'link')
+                  .map((plat) => (
+                    <option key={plat.slug} value={plat.slug}>
+                      {plat.name} ({plat.category})
+                    </option>
+                  ))}
+              </select>
+            </div>
+
             <Button onClick={handleSaveProfile} isLoading={saving}>
               Aggiorna Icone Social
             </Button>
