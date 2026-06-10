@@ -25,6 +25,7 @@ export function PlatformIcon({
 
   // Helper to determine if a color is light or dark and return monochrome hex
   const hexColor = React.useMemo(() => {
+    if (!color) return 'ffffff';
     const clean = color.trim().toLowerCase();
     
     // If it's a CSS variable or hsl
