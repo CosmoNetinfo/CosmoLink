@@ -99,6 +99,7 @@ export default function AppearancePage() {
   const [avatarRingThickness, setAvatarRingThickness] = useState<'0px' | '2px' | '3px' | '4px'>('0px');
   const [socialsStyle, setSocialsStyle] = useState<'brand' | 'white' | 'black'>('brand');
   const [addedSlugs, setAddedSlugs] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<'profile' | 'design' | 'socials'>('profile');
 
   const supabase = createClient();
 
@@ -454,694 +455,740 @@ export default function AppearancePage() {
   return (
     <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-16">
       {/* Settings inputs - 7 cols */}
-      <div className="lg:col-span-7 space-y-8">
-        <div className="flex flex-col gap-1.5">
+      <div className="lg:col-span-7 space-y-6">
+        <div className="flex flex-col gap-1">
           <h1 className="text-3xl font-bold tracking-tight text-[hsl(240_10%_98%)]">Personalizza il tuo Cosmo</h1>
-          <p className="text-sm text-[hsl(240_5%_70%)]">Definisci l'estetica del tuo universo di link.</p>
+          <p className="text-xs text-[hsl(240_5%_70%)]">Definisci l'estetica del tuo universo di link.</p>
         </div>
 
-        {/* Profile Card */}
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-5 border-b border-[hsl(240_15%_18%)] pb-3">
-            <User size={18} className="text-[hsl(263_90%_75%)]" />
-            <h2 className="text-lg font-semibold text-[hsl(240_10%_98%)]">Profilo</h2>
-          </div>
+        {/* Tabs Switcher */}
+        <div className="grid grid-cols-3 bg-[hsl(240_22%_8%)] p-1 rounded-2xl border border-[hsl(240_15%_18%)] gap-1">
+          <button
+            type="button"
+            onClick={() => setActiveTab('profile')}
+            className={`flex items-center justify-center gap-2 py-3 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+              activeTab === 'profile'
+                ? 'bg-gradient-to-r from-[hsl(263_90%_64%)] to-[hsl(190_95%_45%)] text-white shadow-lg'
+                : 'text-[hsl(240_5%_70%)] hover:text-white hover:bg-[hsl(240_20%_12%)]'
+            }`}
+          >
+            <User size={14} />
+            Profilo
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('design')}
+            className={`flex items-center justify-center gap-2 py-3 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+              activeTab === 'design'
+                ? 'bg-gradient-to-r from-[hsl(263_90%_64%)] to-[hsl(190_95%_45%)] text-white shadow-lg'
+                : 'text-[hsl(240_5%_70%)] hover:text-white hover:bg-[hsl(240_20%_12%)]'
+            }`}
+          >
+            <Palette size={14} />
+            Design & Temi
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('socials')}
+            className={`flex items-center justify-center gap-2 py-3 text-xs font-bold rounded-xl transition-all cursor-pointer ${
+              activeTab === 'socials'
+                ? 'bg-gradient-to-r from-[hsl(263_90%_64%)] to-[hsl(190_95%_45%)] text-white shadow-lg'
+                : 'text-[hsl(240_5%_70%)] hover:text-white hover:bg-[hsl(240_20%_12%)]'
+            }`}
+          >
+            <Share2 size={14} />
+            Social Link
+          </button>
+        </div>
 
-          <form onSubmit={handleSaveProfile} className="space-y-5">
-            {/* Avatar upload */}
-            <div className="flex items-center gap-6 mb-4">
-              <div className="relative shrink-0">
-                {avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={avatarUrl}
-                    alt="avatar"
-                    className="w-20 h-20 rounded-full object-cover ring-2 ring-[hsl(263_90%_64%)]"
-                  />
-                ) : (
-                  <div className="w-20 h-20 rounded-full bg-[hsl(263_90%_64%)/0.2] flex items-center justify-center text-xl font-bold text-[hsl(263_90%_75%)]">
-                    {profile?.username[0].toUpperCase()}
-                  </div>
-                )}
-                {uploading && (
-                  <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
-                    <Spinner size="sm" />
-                  </div>
-                )}
-              </div>
-              <div className="flex-1 space-y-2">
-                <p className="text-sm font-medium text-[hsl(240_10%_98%)]">Foto Profilo</p>
-                <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] text-xs font-semibold text-[hsl(240_5%_80%)] hover:text-white cursor-pointer hover:bg-[hsl(240_20%_16%)] transition-colors">
-                  <Upload size={14} />
-                  Carica Foto (JPEG 200x200 automatico)
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-            </div>
-
-            <Input
-              label="Nome Visualizzato"
-              placeholder="Inserisci il tuo nome"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              required
-            />
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-[hsl(240_5%_70%)]">Biografia</label>
-              <textarea
-                placeholder="Parlaci di te..."
-                rows={3}
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                maxLength={200}
-                className="w-full rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-3 py-2 text-sm text-[hsl(240_10%_98%)] placeholder:text-[hsl(240_5%_48%)] focus:outline-none focus:ring-1 focus:ring-[hsl(263_90%_64%)] transition-all resize-none"
-              />
-            </div>
-
-            <Button type="submit" isLoading={saving}>
-              Salva Dati Profilo
-            </Button>
-          </form>
-        </Card>
-
-        {/* Preset Themes Grid (16 Swatches) */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-5 border-b border-[hsl(240_15%_18%)] pb-3">
-            <div className="flex items-center gap-2">
-              <Palette size={18} className="text-[hsl(263_90%_75%)]" />
-              <h2 className="text-lg font-semibold text-[hsl(240_10%_98%)]">Temi Preset (16 Temi)</h2>
-            </div>
-            <p className="text-xs text-[hsl(240_5%_55%)]">Seleziona un punto di partenza</p>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {themes.map((theme) => {
-              const isSelected = themeSlug === theme.slug && !profile?.custom_theme;
-              const isLocked = theme.is_pro && profile?.plan === 'free';
-              const normConfig = normalizeThemeConfig(theme.config);
-
-              let swatchBg = '';
-              if (normConfig.background.type === 'solid') {
-                swatchBg = normConfig.background.value;
-              } else if (normConfig.background.type === 'gradient') {
-                swatchBg = normConfig.background.value;
-              } else if (normConfig.background.type === 'image') {
-                swatchBg = '#1a1025'; // Fallback mockup
-              }
-
-              return (
-                <button
-                  key={theme.slug}
-                  type="button"
-                  onClick={() => selectThemePreset(theme)}
-                  className={`
-                    group relative flex flex-col p-2 rounded-xl border text-left cursor-pointer transition-all duration-200
-                    ${isSelected
-                      ? 'border-[hsl(263_90%_64%)] bg-[hsl(263_90%_64%)/0.08] ring-1 ring-[hsl(263_90%_64%)] scale-[1.02]'
-                      : 'border-[hsl(240_15%_18%)] bg-[hsl(240_20%_8%)] hover:bg-[hsl(240_20%_12%)]'
-                    }
-                  `}
-                >
-                  <div
-                    className="w-full h-16 rounded-lg mb-2 relative overflow-hidden flex items-center justify-center font-bold text-[10px] text-center px-1"
-                    style={{
-                      background: swatchBg,
-                      color: normConfig.typography.text_color,
-                    }}
-                  >
-                    {!isLocked && <span className="drop-shadow-sm">{theme.name}</span>}
-
-                    {isLocked && (
-                      <div className="absolute inset-0 bg-black/75 backdrop-blur-xs flex flex-col items-center justify-center text-amber-400 gap-0.5">
-                        <Lock size={12} />
-                        <span className="text-[9px] font-semibold text-white/90">PRO</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between px-1">
-                    <span className="text-[11px] font-medium text-[hsl(240_10%_90%)] truncate max-w-[70%]">
-                      {theme.name}
-                    </span>
-                    {theme.is_pro && (
-                      <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20">
-                        PRO
-                      </span>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </Card>
-
-        {/* Customization levels */}
-        <div className="space-y-6">
-          {/* Level 1: Background */}
+        {activeTab === 'profile' && (
+          /* Profile Card */
           <Card className="p-6">
-            <div className="flex items-center justify-between mb-4 border-b border-[hsl(240_15%_18%)] pb-3">
-              <div className="flex items-center gap-2">
-                <Sliders size={18} className="text-[hsl(263_90%_75%)]" />
-                <h2 className="text-base font-semibold text-[hsl(240_10%_98%)]">Livello 1: Sfondo</h2>
-              </div>
+            <div className="flex items-center gap-2 mb-5 border-b border-[hsl(240_15%_18%)] pb-3">
+              <User size={18} className="text-[hsl(263_90%_75%)]" />
+              <h2 className="text-lg font-semibold text-[hsl(240_10%_98%)]">Profilo</h2>
             </div>
 
-            <div className="space-y-5">
-              {/* Type Switch */}
-              <div>
-                <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block mb-2 uppercase tracking-wider">Tipo Sfondo</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {(['solid', 'gradient'] as const).map((type) => (
-                    <button
-                      key={type}
-                      type="button"
-                      onClick={() => {
-                        setBgType(type);
-                        if (type === 'gradient') setBgGradientMode('preset');
-                      }}
-                      className={`py-2 text-xs font-medium rounded-xl border transition-all cursor-pointer ${
-                        bgType === type
-                          ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border-[hsl(263_90%_64%)]'
-                          : 'bg-transparent text-[hsl(240_5%_70%)] border-[hsl(240_15%_18%)] hover:bg-[hsl(240_20%_12%)]'
-                      }`}
-                    >
-                      {type === 'solid' ? 'Tinta Unita' : 'Gradiente'}
-                    </button>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (profile?.plan === 'pro') {
-                        setBgType('image');
-                      } else {
-                        alert('Il caricamento dell\'immagine di sfondo è riservato agli utenti PRO!');
-                      }
-                    }}
-                    className={`py-2 text-xs font-medium rounded-xl border transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                      bgType === 'image'
-                        ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border-[hsl(263_90%_64%)]'
-                        : 'bg-transparent text-[hsl(240_5%_70%)] border-[hsl(240_15%_18%)] hover:bg-[hsl(240_20%_12%)]'
-                    }`}
-                  >
-                    Immagine
-                    {profile?.plan === 'free' && <Lock size={10} className="text-amber-400" />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Solid Background settings */}
-              {bgType === 'solid' && (
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl overflow-hidden border border-[hsl(240_15%_18%)] relative shrink-0">
-                    <input
-                      type="color"
-                      value={bgColor}
-                      onChange={(e) => setBgColor(e.target.value)}
-                      className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="text-xs font-medium text-[hsl(240_5%_70%)] block mb-1">Seleziona Colore Sfondo</label>
-                    <input
-                      type="text"
-                      value={bgColor}
-                      onChange={(e) => setBgColor(e.target.value)}
-                      className="w-32 text-xs rounded-lg bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-2 py-1 text-[hsl(240_10%_98%)] uppercase"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Gradient Settings */}
-              {bgType === 'gradient' && (
-                <div className="space-y-4">
-                  {/* Mode Tabs */}
-                  <div className="flex gap-2 border-b border-[hsl(240_15%_18%)] pb-2">
-                    <button
-                      type="button"
-                      onClick={() => setBgGradientMode('preset')}
-                      className={`text-xs font-semibold pb-1 border-b-2 transition-all ${
-                        bgGradientMode === 'preset'
-                          ? 'border-[hsl(263_90%_64%)] text-white'
-                          : 'border-transparent text-[hsl(240_5%_55%)]'
-                      }`}
-                    >
-                      Presets (12 stili)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setBgGradientMode('custom')}
-                      className={`text-xs font-semibold pb-1 border-b-2 transition-all ${
-                        bgGradientMode === 'custom'
-                          ? 'border-[hsl(263_90%_64%)] text-white'
-                          : 'border-transparent text-[hsl(240_5%_55%)]'
-                      }`}
-                    >
-                      Personalizzato A/B
-                    </button>
-                  </div>
-
-                  {/* 12 Swatches presets */}
-                  {bgGradientMode === 'preset' && (
-                    <div className="grid grid-cols-4 gap-2">
-                      {gradientPresets.map((gp, i) => {
-                        const isPresetSelected =
-                          bgGradA.toLowerCase() === gp.colorA.toLowerCase() &&
-                          bgGradB.toLowerCase() === gp.colorB.toLowerCase() &&
-                          bgGradAngle === gp.angle;
-
-                        return (
-                          <button
-                            key={i}
-                            type="button"
-                            onClick={() => {
-                              setBgGradA(gp.colorA);
-                              setBgGradB(gp.colorB);
-                              setBgGradAngle(gp.angle);
-                            }}
-                            className={`h-10 rounded-lg relative overflow-hidden transition-all border ${
-                              isPresetSelected
-                                ? 'border-white scale-[1.05] ring-1 ring-[hsl(263_90%_64%)]'
-                                : 'border-[hsl(240_15%_18%)]'
-                            }`}
-                            style={{ background: gp.value }}
-                            title={gp.name}
-                          >
-                            <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-white bg-black/20 text-center select-none truncate">
-                              {gp.name}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {/* Custom Gradient picker */}
-                  {bgGradientMode === 'custom' && (
-                    <div className="space-y-4">
-                      <div className="flex gap-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
-                            <input
-                              type="color"
-                              value={bgGradA}
-                              onChange={(e) => setBgGradA(e.target.value)}
-                              className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
-                            />
-                          </div>
-                          <span className="text-[11px] font-mono text-[hsl(240_5%_70%)] uppercase">{bgGradA}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
-                            <input
-                              type="color"
-                              value={bgGradB}
-                              onChange={(e) => setBgGradB(e.target.value)}
-                              className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
-                            />
-                          </div>
-                          <span className="text-[11px] font-mono text-[hsl(240_5%_70%)] uppercase">{bgGradB}</span>
-                        </div>
-                      </div>
-
-                      {/* Angle Slider */}
-                      <div className="space-y-1.5">
-                        <div className="flex justify-between text-xs font-semibold text-[hsl(240_5%_70%)]">
-                          <span>Angolo Gradiente</span>
-                          <span className="text-[hsl(263_90%_75%)] font-mono">{bgGradAngle}°</span>
-                        </div>
-                        <input
-                          type="range"
-                          min="0"
-                          max="360"
-                          value={bgGradAngle}
-                          onChange={(e) => setBgGradAngle(parseInt(e.target.value, 10))}
-                          className="w-full h-1.5 rounded-lg appearance-none bg-[hsl(240_20%_16%)] accent-[hsl(263_90%_64%)] cursor-pointer"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Background Image (PRO only) */}
-              {bgType === 'image' && (
-                <div className="space-y-4">
-                  {bgImage && (
+            <form onSubmit={handleSaveProfile} className="space-y-5">
+              {/* Avatar upload */}
+              <div className="flex items-center gap-6 mb-4">
+                <div className="relative shrink-0">
+                  {avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={bgImage}
-                      alt="Sfondo caricato"
-                      className="w-32 h-20 rounded-xl object-cover border border-[hsl(240_15%_18%)]"
+                      src={avatarUrl}
+                      alt="avatar"
+                      className="w-20 h-20 rounded-full object-cover ring-2 ring-[hsl(263_90%_64%)]"
                     />
+                  ) : (
+                    <div className="w-20 h-20 rounded-full bg-[hsl(263_90%_64%)/0.2] flex items-center justify-center text-xl font-bold text-[hsl(263_90%_75%)]">
+                      {profile?.username[0].toUpperCase()}
+                    </div>
                   )}
+                  {uploading && (
+                    <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
+                      <Spinner size="sm" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 space-y-2">
+                  <p className="text-sm font-medium text-[hsl(240_10%_98%)]">Foto Profilo</p>
+                  <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] text-xs font-semibold text-[hsl(240_5%_80%)] hover:text-white cursor-pointer hover:bg-[hsl(240_20%_16%)] transition-colors">
+                    <Upload size={14} />
+                    Carica Foto (JPEG 200x200 automatico)
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+              </div>
 
-                  <div className="flex items-center gap-3">
-                    <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] text-xs font-semibold text-[hsl(240_5%_80%)] hover:text-white cursor-pointer hover:bg-[hsl(240_20%_16%)] transition-colors">
-                      <Upload size={13} />
-                      {bgUploading ? 'Caricamento...' : 'Carica Sfondo (PNG/JPG Max 2MB)'}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleBgImageChange}
-                        disabled={bgUploading}
-                        className="hidden"
-                      />
-                    </label>
-                    {bgImage && (
+              <Input
+                label="Nome Visualizzato"
+                placeholder="Inserisci il tuo nome"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                required
+              />
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-[hsl(240_5%_70%)]">Biografia</label>
+                <textarea
+                  placeholder="Parlaci di te..."
+                  rows={3}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  maxLength={200}
+                  className="w-full rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-3 py-2 text-sm text-[hsl(240_10%_98%)] placeholder:text-[hsl(240_5%_48%)] focus:outline-none focus:ring-1 focus:ring-[hsl(263_90%_64%)] transition-all resize-none"
+                />
+              </div>
+
+              <Button type="submit" isLoading={saving}>
+                Salva Dati Profilo
+              </Button>
+            </form>
+          </Card>
+        )}
+
+        {activeTab === 'design' && (
+          <div className="space-y-6">
+            {/* Preset Themes Grid (16 Swatches) */}
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-5 border-b border-[hsl(240_15%_18%)] pb-3">
+                <div className="flex items-center gap-2">
+                  <Palette size={18} className="text-[hsl(263_90%_75%)]" />
+                  <h2 className="text-lg font-semibold text-[hsl(240_10%_98%)]">Temi Preset (16 Temi)</h2>
+                </div>
+                <p className="text-xs text-[hsl(240_5%_55%)]">Seleziona un punto di partenza</p>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {themes.map((theme) => {
+                  const isSelected = themeSlug === theme.slug && !profile?.custom_theme;
+                  const isLocked = theme.is_pro && profile?.plan === 'free';
+                  const normConfig = normalizeThemeConfig(theme.config);
+
+                  let swatchBg = '';
+                  if (normConfig.background.type === 'solid') {
+                    swatchBg = normConfig.background.value;
+                  } else if (normConfig.background.type === 'gradient') {
+                    swatchBg = normConfig.background.value;
+                  } else if (normConfig.background.type === 'image') {
+                    swatchBg = '#1a1025'; // Fallback mockup
+                  }
+
+                  return (
+                    <button
+                      key={theme.slug}
+                      type="button"
+                      onClick={() => selectThemePreset(theme)}
+                      className={`
+                        group relative flex flex-col p-2 rounded-xl border text-left cursor-pointer transition-all duration-200
+                        ${isSelected
+                          ? 'border-[hsl(263_90%_64%)] bg-[hsl(263_90%_64%)/0.08] ring-1 ring-[hsl(263_90%_64%)] scale-[1.02]'
+                          : 'border-[hsl(240_15%_18%)] bg-[hsl(240_20%_8%)] hover:bg-[hsl(240_20%_12%)]'
+                        }
+                      `}
+                    >
+                      <div
+                        className="w-full h-16 rounded-lg mb-2 relative overflow-hidden flex items-center justify-center font-bold text-[10px] text-center px-1"
+                        style={{
+                          background: swatchBg,
+                          color: normConfig.typography.text_color,
+                        }}
+                      >
+                        {!isLocked && <span className="drop-shadow-sm">{theme.name}</span>}
+
+                        {isLocked && (
+                          <div className="absolute inset-0 bg-black/75 backdrop-blur-xs flex flex-col items-center justify-center text-amber-400 gap-0.5">
+                            <Lock size={12} />
+                            <span className="text-[9px] font-semibold text-white/90">PRO</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-between px-1">
+                        <span className="text-[11px] font-medium text-[hsl(240_10%_90%)] truncate max-w-[70%]">
+                          {theme.name}
+                        </span>
+                        {theme.is_pro && (
+                          <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20">
+                            PRO
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </Card>
+
+            {/* Customization levels */}
+            {/* Level 1: Background */}
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-4 border-b border-[hsl(240_15%_18%)] pb-3">
+                <div className="flex items-center gap-2">
+                  <Sliders size={18} className="text-[hsl(263_90%_75%)]" />
+                  <h2 className="text-base font-semibold text-[hsl(240_10%_98%)]">Livello 1: Sfondo</h2>
+                </div>
+              </div>
+
+              <div className="space-y-5">
+                {/* Type Switch */}
+                <div>
+                  <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block mb-2 uppercase tracking-wider">Tipo Sfondo</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(['solid', 'gradient'] as const).map((type) => (
                       <button
+                        key={type}
                         type="button"
                         onClick={() => {
-                          setBgImage('');
-                          setBgType('solid');
+                          setBgType(type);
+                          if (type === 'gradient') setBgGradientMode('preset');
                         }}
-                        className="p-2 text-red-400 hover:text-red-300 transition-colors"
-                        title="Rimuovi sfondo immagine"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </Card>
-
-          {/* Level 2: Buttons */}
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-4 border-b border-[hsl(240_15%_18%)] pb-3">
-              <div className="flex items-center gap-2">
-                <Palette size={18} className="text-[hsl(263_90%_75%)]" />
-                <h2 className="text-base font-semibold text-[hsl(240_10%_98%)]">Livello 2: Bottoni</h2>
-              </div>
-            </div>
-
-            <div className="space-y-5">
-              {/* Shapes */}
-              <div>
-                <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block mb-2 uppercase tracking-wider">Forma Bottone</label>
-                <div className="grid grid-cols-4 gap-2">
-                  {([
-                    { key: 'full', label: 'Pill', desc: '50px' },
-                    { key: 'md', label: 'Rounded', desc: '14px' },
-                    { key: 'sm', label: 'Square', desc: '4px' },
-                    { key: 'none', label: 'Sharp', desc: '0px' },
-                  ] as const).map((shape) => (
-                    <button
-                      key={shape.key}
-                      type="button"
-                      onClick={() => setBtnShape(shape.key)}
-                      className={`p-2 text-xs font-semibold rounded-xl border text-center transition-all cursor-pointer ${
-                        btnShape === shape.key
-                          ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border-[hsl(263_90%_64%)] scale-[1.02]'
-                          : 'bg-transparent text-[hsl(240_5%_70%)] border-[hsl(240_15%_18%)] hover:bg-[hsl(240_20%_12%)]'
-                      }`}
-                    >
-                      <div className="truncate">{shape.label}</div>
-                      <div className="text-[9px] opacity-60 font-mono mt-0.5">{shape.desc}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Styles */}
-              <div>
-                <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block mb-2 uppercase tracking-wider">Stile Riempimento</label>
-                <div className="grid grid-cols-5 gap-1.5">
-                  {([
-                    { key: 'solid', label: 'Pieno' },
-                    { key: 'outline', label: 'Outline' },
-                    { key: 'glass', label: 'Glass' },
-                    { key: 'shadow', label: 'Shadow' },
-                    { key: 'gradient', label: 'Gradient' },
-                  ] as const).map((style) => (
-                    <button
-                      key={style.key}
-                      type="button"
-                      onClick={() => setBtnStyle(style.key)}
-                      className={`py-2 px-1 text-[11px] font-semibold rounded-lg border text-center transition-all cursor-pointer ${
-                        btnStyle === style.key
-                          ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border-[hsl(263_90%_64%)]'
-                          : 'bg-transparent text-[hsl(240_5%_70%)] border-[hsl(240_15%_18%)] hover:bg-[hsl(240_20%_12%)]'
-                      }`}
-                    >
-                      {style.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Button colors */}
-              <div className="flex gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
-                    <input
-                      type="color"
-                      value={btnBgColor}
-                      onChange={(e) => setBtnBgColor(e.target.value)}
-                      className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-[hsl(240_5%_55%)] font-semibold uppercase">Colore Bottone</span>
-                    <span className="text-xs font-mono text-[hsl(240_5%_70%)] uppercase">{btnBgColor}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
-                    <input
-                      type="color"
-                      value={btnTextColor}
-                      onChange={(e) => setBtnTextColor(e.target.value)}
-                      className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-[hsl(240_5%_55%)] font-semibold uppercase">Colore Testo</span>
-                    <span className="text-xs font-mono text-[hsl(240_5%_70%)] uppercase">{btnTextColor}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Level 3: Advanced details (PRO only) */}
-          <Card className="p-6 relative overflow-hidden">
-            {profile?.plan === 'free' && (
-              <div className="absolute inset-0 z-10 bg-black/65 backdrop-blur-xs rounded-2xl flex flex-col items-center justify-center p-6 text-center">
-                <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 mb-2 border border-amber-500/20">
-                  <Lock size={18} />
-                </div>
-                <p className="text-sm font-semibold text-[hsl(240_10%_98%)]">Dettagli Avanzati (Solo PRO)</p>
-                <p className="text-xs text-[hsl(240_5%_70%)] mt-1 max-w-xs">
-                  Sblocca il controllo totale su font, colori di bio e username, ring dell'avatar, stili delle icone social e sfondi immagine.
-                </p>
-              </div>
-            )}
-
-            <div className="flex items-center justify-between mb-4 border-b border-[hsl(240_15%_18%)] pb-3">
-              <div className="flex items-center gap-2">
-                <Sparkle size={18} className="text-amber-400" />
-                <h2 className="text-base font-semibold text-[hsl(240_10%_98%)]">Livello 3: Dettagli Avanzati</h2>
-              </div>
-              <Badge variant="pro">PRO</Badge>
-            </div>
-
-            <div className="space-y-5">
-              {/* Font Family */}
-              <div>
-                <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block mb-1.5 uppercase tracking-wider">Tipografia / Font</label>
-                <select
-                  value={customFont}
-                  onChange={(e) => setCustomFont(e.target.value as any)}
-                  className="w-full rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-3 py-2 text-sm text-[hsl(240_10%_98%)] focus:outline-none focus:ring-1 focus:ring-[hsl(263_90%_64%)]"
-                >
-                  <option value="outfit">Outfit (Sans-Serif)</option>
-                  <option value="dm-sans">DM Sans (Sans-Serif)</option>
-                  <option value="syne">Syne (Geometric/Modern)</option>
-                  <option value="playfair">Playfair Display (Serif)</option>
-                  <option value="space-mono">Space Mono (Monospace)</option>
-                  <option value="nunito">Nunito (Rounded/Soft)</option>
-                </select>
-              </div>
-
-              {/* Typography Colors */}
-              <div className="flex gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
-                    <input
-                      type="color"
-                      value={usrNameColor}
-                      onChange={(e) => setUsrNameColor(e.target.value)}
-                      className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-[hsl(240_5%_55%)] font-semibold uppercase">Nome Utente</span>
-                    <span className="text-xs font-mono text-[hsl(240_5%_70%)] uppercase">{usrNameColor}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
-                    <input
-                      type="color"
-                      value={usrBioColor}
-                      onChange={(e) => setUsrBioColor(e.target.value)}
-                      className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-[hsl(240_5%_55%)] font-semibold uppercase">Biografia</span>
-                    <span className="text-xs font-mono text-[hsl(240_5%_70%)] uppercase">{usrBioColor}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Avatar Ring */}
-              <div className="space-y-2.5">
-                <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block uppercase tracking-wider">Bordo Avatar (Ring)</label>
-                <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative shrink-0">
-                    <input
-                      type="color"
-                      value={avatarRingColor}
-                      onChange={(e) => setAvatarRingColor(e.target.value)}
-                      className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
-                    />
-                  </div>
-                  <div className="flex-1 grid grid-cols-4 gap-2">
-                    {(['0px', '2px', '3px', '4px'] as const).map((thick) => (
-                      <button
-                        key={thick}
-                        type="button"
-                        onClick={() => setAvatarRingThickness(thick)}
-                        className={`py-1 text-xs font-medium rounded-lg border text-center transition-all cursor-pointer ${
-                          avatarRingThickness === thick
+                        className={`py-2 text-xs font-medium rounded-xl border transition-all cursor-pointer ${
+                          bgType === type
                             ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border-[hsl(263_90%_64%)]'
                             : 'bg-transparent text-[hsl(240_5%_70%)] border-[hsl(240_15%_18%)] hover:bg-[hsl(240_20%_12%)]'
                         }`}
                       >
-                        {thick === '0px' ? 'Nessuno' : thick}
+                        {type === 'solid' ? 'Tinta Unita' : 'Gradiente'}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (profile?.plan === 'pro') {
+                          setBgType('image');
+                        } else {
+                          alert('Il caricamento dell\'immagine di sfondo è riservato agli utenti PRO!');
+                        }
+                      }}
+                      className={`py-2 text-xs font-medium rounded-xl border transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                        bgType === 'image'
+                          ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border-[hsl(263_90%_64%)]'
+                          : 'bg-transparent text-[hsl(240_5%_70%)] border-[hsl(240_15%_18%)] hover:bg-[hsl(240_20%_12%)]'
+                      }`}
+                    >
+                      Immagine
+                      {profile?.plan === 'free' && <Lock size={10} className="text-amber-400" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Solid Background settings */}
+                {bgType === 'solid' && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-[hsl(240_15%_18%)] relative shrink-0">
+                      <input
+                        type="color"
+                        value={bgColor}
+                        onChange={(e) => setBgColor(e.target.value)}
+                        className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="text-xs font-medium text-[hsl(240_5%_70%)] block mb-1">Seleziona Colore Sfondo</label>
+                      <input
+                        type="text"
+                        value={bgColor}
+                        onChange={(e) => setBgColor(e.target.value)}
+                        className="w-32 text-xs rounded-lg bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-2 py-1 text-[hsl(240_10%_98%)] uppercase"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Gradient Settings */}
+                {bgType === 'gradient' && (
+                  <div className="space-y-4">
+                    {/* Mode Tabs */}
+                    <div className="flex gap-2 border-b border-[hsl(240_15%_18%)] pb-2">
+                      <button
+                        type="button"
+                        onClick={() => setBgGradientMode('preset')}
+                        className={`text-xs font-semibold pb-1 border-b-2 transition-all ${
+                          bgGradientMode === 'preset'
+                            ? 'border-[hsl(263_90%_64%)] text-white'
+                            : 'border-transparent text-[hsl(240_5%_55%)]'
+                        }`}
+                      >
+                        Presets (12 stili)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setBgGradientMode('custom')}
+                        className={`text-xs font-semibold pb-1 border-b-2 transition-all ${
+                          bgGradientMode === 'custom'
+                            ? 'border-[hsl(263_90%_64%)] text-white'
+                            : 'border-transparent text-[hsl(240_5%_55%)]'
+                        }`}
+                      >
+                        Personalizzato A/B
+                      </button>
+                    </div>
+
+                    {/* 12 Swatches presets */}
+                    {bgGradientMode === 'preset' && (
+                      <div className="grid grid-cols-4 gap-2">
+                        {gradientPresets.map((gp, i) => {
+                          const isPresetSelected =
+                            bgGradA.toLowerCase() === gp.colorA.toLowerCase() &&
+                            bgGradB.toLowerCase() === gp.colorB.toLowerCase() &&
+                            bgGradAngle === gp.angle;
+
+                          return (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => {
+                                setBgGradA(gp.colorA);
+                                setBgGradB(gp.colorB);
+                                setBgGradAngle(gp.angle);
+                              }}
+                              className={`h-10 rounded-lg relative overflow-hidden transition-all border ${
+                                isPresetSelected
+                                  ? 'border-white scale-[1.05] ring-1 ring-[hsl(263_90%_64%)]'
+                                  : 'border-[hsl(240_15%_18%)]'
+                              }`}
+                              style={{ background: gp.value }}
+                              title={gp.name}
+                            >
+                              <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-white bg-black/20 text-center select-none truncate">
+                                {gp.name}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* Custom Gradient picker */}
+                    {bgGradientMode === 'custom' && (
+                      <div className="space-y-4">
+                        <div className="flex gap-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
+                              <input
+                                type="color"
+                                value={bgGradA}
+                                onChange={(e) => setBgGradA(e.target.value)}
+                                className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
+                              />
+                            </div>
+                            <span className="text-[11px] font-mono text-[hsl(240_5%_70%)] uppercase">{bgGradA}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
+                              <input
+                                type="color"
+                                value={bgGradB}
+                                onChange={(e) => setBgGradB(e.target.value)}
+                                className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
+                              />
+                            </div>
+                            <span className="text-[11px] font-mono text-[hsl(240_5%_70%)] uppercase">{bgGradB}</span>
+                          </div>
+                        </div>
+
+                        {/* Angle Slider */}
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between text-xs font-semibold text-[hsl(240_5%_70%)]">
+                            <span>Angolo Gradiente</span>
+                            <span className="text-[hsl(263_90%_75%)] font-mono">{bgGradAngle}°</span>
+                          </div>
+                          <input
+                            type="range"
+                            min="0"
+                            max="360"
+                            value={bgGradAngle}
+                            onChange={(e) => setBgGradAngle(parseInt(e.target.value, 10))}
+                            className="w-full h-1.5 rounded-lg appearance-none bg-[hsl(240_20%_16%)] accent-[hsl(263_90%_64%)] cursor-pointer"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Background Image (PRO only) */}
+                {bgType === 'image' && (
+                  <div className="space-y-4">
+                    {bgImage && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={bgImage}
+                        alt="Sfondo caricato"
+                        className="w-32 h-20 rounded-xl object-cover border border-[hsl(240_15%_18%)]"
+                      />
+                    )}
+
+                    <div className="flex items-center gap-3">
+                      <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] text-xs font-semibold text-[hsl(240_5%_80%)] hover:text-white cursor-pointer hover:bg-[hsl(240_20%_16%)] transition-colors">
+                        <Upload size={13} />
+                        {bgUploading ? 'Caricamento...' : 'Carica Sfondo (PNG/JPG Max 2MB)'}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleBgImageChange}
+                          disabled={bgUploading}
+                          className="hidden"
+                        />
+                      </label>
+                      {bgImage && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setBgImage('');
+                            setBgType('solid');
+                          }}
+                          className="p-2 text-red-400 hover:text-red-300 transition-colors"
+                          title="Rimuovi sfondo immagine"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Card>
+
+            {/* Level 2: Buttons */}
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-4 border-b border-[hsl(240_15%_18%)] pb-3">
+                <div className="flex items-center gap-2">
+                  <Palette size={18} className="text-[hsl(263_90%_75%)]" />
+                  <h2 className="text-base font-semibold text-[hsl(240_10%_98%)]">Livello 2: Bottoni</h2>
+                </div>
+              </div>
+
+              <div className="space-y-5">
+                {/* Shapes */}
+                <div>
+                  <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block mb-2 uppercase tracking-wider">Forma Bottone</label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {([
+                      { key: 'full', label: 'Pill', desc: '50px' },
+                      { key: 'md', label: 'Rounded', desc: '14px' },
+                      { key: 'sm', label: 'Square', desc: '4px' },
+                      { key: 'none', label: 'Sharp', desc: '0px' },
+                    ] as const).map((shape) => (
+                      <button
+                        key={shape.key}
+                        type="button"
+                        onClick={() => setBtnShape(shape.key)}
+                        className={`p-2 text-xs font-semibold rounded-xl border text-center transition-all cursor-pointer ${
+                          btnShape === shape.key
+                            ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border-[hsl(263_90%_64%)] scale-[1.02]'
+                            : 'bg-transparent text-[hsl(240_5%_70%)] border-[hsl(240_15%_18%)] hover:bg-[hsl(240_20%_12%)]'
+                        }`}
+                      >
+                        <div className="truncate">{shape.label}</div>
+                        <div className="text-[9px] opacity-60 font-mono mt-0.5">{shape.desc}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Styles */}
+                <div>
+                  <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block mb-2 uppercase tracking-wider">Stile Riempimento</label>
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {([
+                      { key: 'solid', label: 'Pieno' },
+                      { key: 'outline', label: 'Outline' },
+                      { key: 'glass', label: 'Glass' },
+                      { key: 'shadow', label: 'Shadow' },
+                      { key: 'gradient', label: 'Gradient' },
+                    ] as const).map((style) => (
+                      <button
+                        key={style.key}
+                        type="button"
+                        onClick={() => setBtnStyle(style.key)}
+                        className={`py-2 px-1 text-[11px] font-semibold rounded-lg border text-center transition-all cursor-pointer ${
+                          btnStyle === style.key
+                            ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border-[hsl(263_90%_64%)]'
+                            : 'bg-transparent text-[hsl(240_5%_70%)] border-[hsl(240_15%_18%)] hover:bg-[hsl(240_20%_12%)]'
+                        }`}
+                      >
+                        {style.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Button colors */}
+                <div className="flex gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
+                      <input
+                        type="color"
+                        value={btnBgColor}
+                        onChange={(e) => setBtnBgColor(e.target.value)}
+                        className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-[hsl(240_5%_55%)] font-semibold uppercase">Colore Bottone</span>
+                      <span className="text-xs font-mono text-[hsl(240_5%_70%)] uppercase">{btnBgColor}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
+                      <input
+                        type="color"
+                        value={btnTextColor}
+                        onChange={(e) => setBtnTextColor(e.target.value)}
+                        className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-[hsl(240_5%_55%)] font-semibold uppercase">Colore Testo</span>
+                      <span className="text-xs font-mono text-[hsl(240_5%_70%)] uppercase">{btnTextColor}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Level 3: Advanced details (PRO only) */}
+            <Card className="p-6 relative overflow-hidden">
+              {profile?.plan === 'free' && (
+                <div className="absolute inset-0 z-10 bg-black/65 backdrop-blur-xs rounded-2xl flex flex-col items-center justify-center p-6 text-center">
+                  <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 mb-2 border border-amber-500/20">
+                    <Lock size={18} />
+                  </div>
+                  <p className="text-sm font-semibold text-[hsl(240_10%_98%)]">Dettagli Avanzati (Solo PRO)</p>
+                  <p className="text-xs text-[hsl(240_5%_70%)] mt-1 max-w-xs">
+                    Sblocca il controllo totale su font, colori di bio e username, ring dell'avatar, stili delle icone social e sfondi immagine.
+                  </p>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between mb-4 border-b border-[hsl(240_15%_18%)] pb-3">
+                <div className="flex items-center gap-2">
+                  <Sparkle size={18} className="text-amber-400" />
+                  <h2 className="text-base font-semibold text-[hsl(240_10%_98%)]">Livello 3: Dettagli Avanzati</h2>
+                </div>
+                <Badge variant="pro">PRO</Badge>
+              </div>
+
+              <div className="space-y-5">
+                {/* Font Family */}
+                <div>
+                  <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block mb-1.5 uppercase tracking-wider">Tipografia / Font</label>
+                  <select
+                    value={customFont}
+                    onChange={(e) => setCustomFont(e.target.value as any)}
+                    className="w-full rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-3 py-2 text-sm text-[hsl(240_10%_98%)] focus:outline-none focus:ring-1 focus:ring-[hsl(263_90%_64%)]"
+                  >
+                    <option value="outfit">Outfit (Sans-Serif)</option>
+                    <option value="dm-sans">DM Sans (Sans-Serif)</option>
+                    <option value="syne">Syne (Geometric/Modern)</option>
+                    <option value="playfair">Playfair Display (Serif)</option>
+                    <option value="space-mono">Space Mono (Monospace)</option>
+                    <option value="nunito">Nunito (Rounded/Soft)</option>
+                  </select>
+                </div>
+
+                {/* Typography Colors */}
+                <div className="flex gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
+                      <input
+                        type="color"
+                        value={usrNameColor}
+                        onChange={(e) => setUsrNameColor(e.target.value)}
+                        className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-[hsl(240_5%_55%)] font-semibold uppercase">Nome Utente</span>
+                      <span className="text-xs font-mono text-[hsl(240_5%_70%)] uppercase">{usrNameColor}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative">
+                      <input
+                        type="color"
+                        value={usrBioColor}
+                        onChange={(e) => setUsrBioColor(e.target.value)}
+                        className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-[hsl(240_5%_55%)] font-semibold uppercase">Biografia</span>
+                      <span className="text-xs font-mono text-[hsl(240_5%_70%)] uppercase">{usrBioColor}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Avatar Ring */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block uppercase tracking-wider">Bordo Avatar (Ring)</label>
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-lg overflow-hidden border border-[hsl(240_15%_18%)] relative shrink-0">
+                      <input
+                        type="color"
+                        value={avatarRingColor}
+                        onChange={(e) => setAvatarRingColor(e.target.value)}
+                        className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
+                      />
+                    </div>
+                    <div className="flex-1 grid grid-cols-4 gap-2">
+                      {(['0px', '2px', '3px', '4px'] as const).map((thick) => (
+                        <button
+                          key={thick}
+                          type="button"
+                          onClick={() => setAvatarRingThickness(thick)}
+                          className={`py-1 text-xs font-medium rounded-lg border text-center transition-all cursor-pointer ${
+                            avatarRingThickness === thick
+                              ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border-[hsl(263_90%_64%)]'
+                              : 'bg-transparent text-[hsl(240_5%_70%)] border-[hsl(240_15%_18%)] hover:bg-[hsl(240_20%_12%)]'
+                          }`}
+                        >
+                          {thick === '0px' ? 'Nessuno' : thick}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Social Icons row layout style */}
+                <div>
+                  <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block mb-2 uppercase tracking-wider">Stile Icone Social</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {([
+                      { key: 'brand', label: 'Brand Colore' },
+                      { key: 'white', label: 'Bianco' },
+                      { key: 'black', label: 'Nero' },
+                    ] as const).map((style) => (
+                      <button
+                        key={style.key}
+                        type="button"
+                        onClick={() => setSocialsStyle(style.key)}
+                        className={`py-2 text-xs font-medium rounded-xl border text-center transition-all cursor-pointer ${
+                          socialsStyle === style.key
+                            ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border-[hsl(263_90%_64%)]'
+                            : 'bg-transparent text-[hsl(240_5%_70%)] border-[hsl(240_15%_18%)] hover:bg-[hsl(240_20%_12%)]'
+                        }`}
+                      >
+                        {style.label}
                       </button>
                     ))}
                   </div>
                 </div>
               </div>
+            </Card>
 
-              {/* Social Icons row layout style */}
-              <div>
-                <label className="text-xs font-semibold text-[hsl(240_5%_70%)] block mb-2 uppercase tracking-wider">Stile Icone Social</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {([
-                    { key: 'brand', label: 'Brand Colore' },
-                    { key: 'white', label: 'Bianco' },
-                    { key: 'black', label: 'Nero' },
-                  ] as const).map((style) => (
-                    <button
-                      key={style.key}
-                      type="button"
-                      onClick={() => setSocialsStyle(style.key)}
-                      className={`py-2 text-xs font-medium rounded-xl border text-center transition-all cursor-pointer ${
-                        socialsStyle === style.key
-                          ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border-[hsl(263_90%_64%)]'
-                          : 'bg-transparent text-[hsl(240_5%_70%)] border-[hsl(240_15%_18%)] hover:bg-[hsl(240_20%_12%)]'
-                      }`}
-                    >
-                      {style.label}
-                    </button>
-                  ))}
-                </div>
+            {/* Action Save Button */}
+            <div className="pt-2 flex justify-end">
+              <Button
+                onClick={handleSaveCustomTheme}
+                isLoading={saving}
+                className="px-8 py-3 rounded-xl font-bold bg-gradient-to-r from-[hsl(263_90%_64%)] to-[hsl(190_95%_45%)] text-white hover:opacity-95 shadow-lg shadow-[hsl(263_90%_64%)]/20 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+              >
+                Salva Modifiche Aspetto
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'socials' && (
+          /* Social Links Row Editor */
+          <Card className="p-6">
+            <div className="flex items-center gap-2 mb-4 border-b border-[hsl(240_15%_18%)] pb-3">
+              <Share2 size={18} className="text-[hsl(263_90%_75%)]" />
+              <h2 className="text-lg font-semibold text-[hsl(240_10%_98%)]">Social Link Integrati</h2>
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-xs text-[hsl(240_5%_70%)]">
+                Inserisci i tuoi profili social. Appariranno come icone sotto la tua biografia per un accesso rapido.
+              </p>
+              
+              <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                {visiblePlatforms.map((plat) => (
+                  <div key={plat.slug} className="flex items-center gap-3">
+                    <PlatformIcon slug={plat.slug} size={20} color={plat.brand_color} className="shrink-0" />
+                    <span className="text-xs font-medium text-[hsl(240_10%_98%)] w-24 shrink-0">{plat.name}</span>
+                    <input
+                      type="url"
+                      placeholder={plat.slug === 'amazonmusic' || plat.slug === 'spotify' || plat.slug === 'applemusic' || plat.slug === 'youtube'
+                        ? `Link al profilo o playlist ${plat.name}`
+                        : `Username o link ${plat.name}`
+                      }
+                      value={socials[plat.slug] || ''}
+                      onChange={(e) => {
+                        const newSocials = { ...socials };
+                        if (e.target.value) {
+                          newSocials[plat.slug] = e.target.value;
+                        } else {
+                          delete newSocials[plat.slug];
+                        }
+                        setSocials(newSocials);
+                      }}
+                      className="flex-1 rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-3 py-2 text-xs text-[hsl(240_10%_98%)] placeholder:text-[hsl(240_5%_48%)] focus:outline-none focus:ring-1 focus:ring-[hsl(263_90%_64%)] transition-all"
+                    />
+                  </div>
+                ))}
               </div>
+
+              {/* Dropdown to add other platforms */}
+              <div className="flex items-center gap-3 pt-3 border-t border-[hsl(240_15%_18%)]">
+                <span className="text-xs font-medium text-[hsl(240_5%_70%)] shrink-0">Mostra altre piattaforme:</span>
+                <select
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val && !addedSlugs.includes(val)) {
+                      setAddedSlugs([...addedSlugs, val]);
+                    }
+                    e.target.value = ''; // Reset select
+                  }}
+                  className="flex-1 rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-3 py-2 text-xs text-[hsl(240_10%_98%)] focus:outline-none focus:ring-1 focus:ring-[hsl(263_90%_64%)]"
+                >
+                  <option value="">-- Seleziona e aggiungi --</option>
+                  {platforms
+                    .filter((plat) => !visiblePlatforms.some((vp) => vp.slug === plat.slug) && plat.slug !== 'link')
+                    .map((plat) => (
+                      <option key={plat.slug} value={plat.slug}>
+                        {plat.name} ({plat.category})
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              <Button onClick={handleSaveProfile} isLoading={saving}>
+                Aggiorna Icone Social
+              </Button>
             </div>
           </Card>
-
-          {/* Action Save Button */}
-          <div className="pt-2 flex justify-end">
-            <Button
-              onClick={handleSaveCustomTheme}
-              isLoading={saving}
-              className="px-8 py-3 rounded-xl font-bold bg-gradient-to-r from-[hsl(263_90%_64%)] to-[hsl(190_95%_45%)] text-white hover:opacity-95 shadow-lg shadow-[hsl(263_90%_64%)]/20 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
-            >
-              Salva Modifiche Aspetto
-            </Button>
-          </div>
-        </div>
-
-        {/* Social Links Row Editor */}
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4 border-b border-[hsl(240_15%_18%)] pb-3">
-            <Share2 size={18} className="text-[hsl(263_90%_75%)]" />
-            <h2 className="text-lg font-semibold text-[hsl(240_10%_98%)]">Social Link Integrati</h2>
-          </div>
-
-          <div className="space-y-4">
-            <p className="text-xs text-[hsl(240_5%_70%)]">
-              Inserisci i tuoi profili social. Appariranno come icone sotto la tua biografia per un accesso rapido.
-            </p>
-            
-            <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
-              {visiblePlatforms.map((plat) => (
-                <div key={plat.slug} className="flex items-center gap-3">
-                  <PlatformIcon slug={plat.slug} size={20} color={plat.brand_color} className="shrink-0" />
-                  <span className="text-xs font-medium text-[hsl(240_10%_98%)] w-24 shrink-0">{plat.name}</span>
-                  <input
-                    type="url"
-                    placeholder={plat.slug === 'amazonmusic' || plat.slug === 'spotify' || plat.slug === 'applemusic' || plat.slug === 'youtube'
-                      ? `Link al profilo o playlist ${plat.name}`
-                      : `Username o link ${plat.name}`
-                    }
-                    value={socials[plat.slug] || ''}
-                    onChange={(e) => {
-                      const newSocials = { ...socials };
-                      if (e.target.value) {
-                        newSocials[plat.slug] = e.target.value;
-                      } else {
-                        delete newSocials[plat.slug];
-                      }
-                      setSocials(newSocials);
-                    }}
-                    className="flex-1 rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-3 py-2 text-xs text-[hsl(240_10%_98%)] placeholder:text-[hsl(240_5%_48%)] focus:outline-none focus:ring-1 focus:ring-[hsl(263_90%_64%)] transition-all"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Dropdown to add other platforms */}
-            <div className="flex items-center gap-3 pt-3 border-t border-[hsl(240_15%_18%)]">
-              <span className="text-xs font-medium text-[hsl(240_5%_70%)] shrink-0">Mostra altre piattaforme:</span>
-              <select
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val && !addedSlugs.includes(val)) {
-                    setAddedSlugs([...addedSlugs, val]);
-                  }
-                  e.target.value = ''; // Reset select
-                }}
-                className="flex-1 rounded-xl bg-[hsl(240_20%_12%)] border border-[hsl(240_15%_18%)] px-3 py-2 text-xs text-[hsl(240_10%_98%)] focus:outline-none focus:ring-1 focus:ring-[hsl(263_90%_64%)]"
-              >
-                <option value="">-- Seleziona e aggiungi --</option>
-                {platforms
-                  .filter((plat) => !visiblePlatforms.some((vp) => vp.slug === plat.slug) && plat.slug !== 'link')
-                  .map((plat) => (
-                    <option key={plat.slug} value={plat.slug}>
-                      {plat.name} ({plat.category})
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            <Button onClick={handleSaveProfile} isLoading={saving}>
-              Aggiorna Icone Social
-            </Button>
-          </div>
-        </Card>
+        )}
       </div>
 
       {/* Live iPhone preview sticky - 5 cols */}
