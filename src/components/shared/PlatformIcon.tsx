@@ -106,7 +106,42 @@ export function PlatformIcon({
     );
   }
 
-  if (error || !slug || slug === 'link') {
+  const [faviconError, setFaviconError] = useState(false);
+
+  // Estrae l'host dal link per recuperare la favicon
+  const domain = React.useMemo(() => {
+    if (!fallbackUrl) return '';
+    try {
+      let url = fallbackUrl.trim();
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+      }
+      return new URL(url).hostname;
+    } catch {
+      return '';
+    }
+  }, [fallbackUrl]);
+
+  // Se è un link generico e abbiamo un dominio valido, proviamo a caricare la favicon nativa
+  if (slug === 'link' && domain && !faviconError) {
+    const faviconUrl = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+    return (
+      <div className={className} style={wrapperStyle} title={title || fallbackUrl}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={faviconUrl}
+          alt={title || 'favicon'}
+          width={size}
+          height={size}
+          style={{ width: size, height: size, objectFit: 'contain', borderRadius: '4px' }}
+          onError={() => setFaviconError(true)}
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+
+  if (error || !slug || slug === 'link' || (slug === 'link' && faviconError)) {
     return (
       <div className={className} style={wrapperStyle} title={title || fallbackUrl}>
         <svg
