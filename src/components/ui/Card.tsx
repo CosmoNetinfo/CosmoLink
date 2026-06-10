@@ -10,9 +10,9 @@ export function Card({ children, className = '', hover = false }: CardProps) {
   return (
     <div
       className={`
-        rounded-2xl border border-[hsl(240_15%_18%)]
-        bg-[hsl(240_20%_12%)]
-        ${hover ? 'transition-all duration-300 hover:border-[hsl(263_90%_64%)/0.3] hover:shadow-lg hover:shadow-[hsl(263_90%_64%)/0.08]' : ''}
+        rounded-2xl border border-border
+        bg-bg-card
+        ${hover ? 'transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/8' : ''}
         ${className}
       `}
     >
@@ -23,7 +23,7 @@ export function Card({ children, className = '', hover = false }: CardProps) {
 
 export function CardHeader({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`px-6 py-4 border-b border-[hsl(240_15%_18%)] ${className}`}>
+    <div className={`px-6 py-4 border-b border-border ${className}`}>
       {children}
     </div>
   );

@@ -113,7 +113,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen flex bg-[hsl(240_25%_4%)]">
+    <div className="min-h-screen flex bg-bg-primary text-text-primary">
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
@@ -127,18 +127,18 @@ export default function DashboardLayout({
         className={`
           fixed lg:static inset-y-0 left-0 z-50
           flex flex-col
-          bg-[hsl(240_22%_8%)] border-r border-[hsl(240_15%_18%)]
+          bg-bg-secondary border-r border-border
           transition-all duration-300 ease-in-out
           ${collapsed ? 'w-[72px]' : 'w-64'}
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 h-16 border-b border-[hsl(240_15%_18%)]">
+        <div className="flex items-center justify-between px-4 h-16 border-b border-border">
           <Logo size={collapsed ? 'sm' : 'md'} showText={!collapsed} />
           <button
             onClick={() => setMobileOpen(false)}
-            className="lg:hidden text-[hsl(240_5%_70%)] hover:text-white cursor-pointer"
+            className="lg:hidden text-text-secondary hover:text-text-primary cursor-pointer"
           >
             <X size={20} />
           </button>
@@ -161,8 +161,8 @@ export default function DashboardLayout({
                   flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
                   transition-all duration-200
                   ${isActive
-                    ? 'bg-[hsl(263_90%_64%)/0.15] text-[hsl(263_90%_75%)] border border-[hsl(263_90%_64%)/0.2]'
-                    : 'text-[hsl(240_5%_70%)] hover:bg-[hsl(240_20%_12%)] hover:text-[hsl(240_10%_98%)] border border-transparent'
+                    ? 'bg-primary/10 text-primary border border-primary/20'
+                    : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary border border-transparent'
                   }
                   ${collapsed ? 'justify-center px-2' : ''}
                 `}
@@ -181,7 +181,7 @@ export default function DashboardLayout({
             <Link
               href={`/${profile.username}`}
               target="_blank"
-              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[hsl(240_5%_70%)] hover:bg-[hsl(240_20%_12%)] transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-text-secondary hover:bg-bg-primary transition-colors"
             >
               <ExternalLink size={14} />
               cosmolink.app/{profile.username}
@@ -200,7 +200,7 @@ export default function DashboardLayout({
                   href={`https://wa.me/393517064080?text=${encodeURIComponent(`Ciao, voglio attivare CosmoLink PRO per l'account ${profile.username}.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[11px] font-bold text-center py-1.5 px-3 rounded-lg text-white bg-gradient-to-r from-[hsl(263_90%_64%)] to-[hsl(25_95%_53%)] hover:scale-[1.02] transition-transform shadow-md shadow-purple-500/10 cursor-pointer block"
+                  className="text-[11px] font-bold text-center py-1.5 px-3 rounded-lg text-white bg-gradient-to-r from-primary to-[hsl(25_95%_53%)] hover:scale-[1.02] transition-transform shadow-md shadow-purple-500/10 cursor-pointer block"
                 >
                   💬 Upgrade PRO (€29)
                 </a>
@@ -212,7 +212,7 @@ export default function DashboardLayout({
             onClick={handleLogout}
             className={`
               flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm
-              text-[hsl(240_5%_70%)] hover:bg-red-500/10 hover:text-red-400
+              text-text-secondary hover:bg-red-500/10 hover:text-red-400
               transition-all duration-200 w-full cursor-pointer
               ${collapsed ? 'justify-center px-2' : ''}
             `}
@@ -225,7 +225,7 @@ export default function DashboardLayout({
           {/* Collapse toggle (desktop) */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="hidden lg:flex items-center justify-center w-full py-2 text-[hsl(240_5%_48%)] hover:text-[hsl(240_10%_98%)] transition-colors cursor-pointer"
+            className="hidden lg:flex items-center justify-center w-full py-2 text-text-muted hover:text-text-primary transition-colors cursor-pointer"
           >
             {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </button>
@@ -235,10 +235,10 @@ export default function DashboardLayout({
       {/* Main content */}
       <main className="flex-1 min-w-0">
         {/* Top bar */}
-        <header className="sticky top-0 z-30 h-16 border-b border-[hsl(240_15%_18%)] bg-[hsl(240_25%_4%)/0.8] backdrop-blur-md flex items-center justify-between px-4 lg:px-8">
+        <header className="sticky top-0 z-30 h-16 border-b border-border bg-bg-primary/80 backdrop-blur-md flex items-center justify-between px-4 lg:px-8">
           <button
             onClick={() => setMobileOpen(true)}
-            className="lg:hidden text-[hsl(240_5%_70%)] hover:text-white cursor-pointer"
+            className="lg:hidden text-text-secondary hover:text-text-primary cursor-pointer"
           >
             <Menu size={24} />
           </button>
@@ -251,14 +251,14 @@ export default function DashboardLayout({
                   <img
                     src={profile.avatar_url}
                     alt={profile.display_name || profile.username}
-                    className="w-8 h-8 rounded-full object-cover ring-2 ring-[hsl(263_90%_64%)/0.5]"
+                    className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/50"
                   />
                 ) : (
-                  <div className="w-8 h-8 rounded-full bg-[hsl(263_90%_64%)/0.2] flex items-center justify-center text-sm font-semibold text-[hsl(263_90%_75%)]">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-semibold text-primary">
                     {(profile.display_name || profile.username)?.[0]?.toUpperCase()}
                   </div>
                 )}
-                <span className="hidden sm:block text-sm text-[hsl(240_10%_98%)]">
+                <span className="hidden sm:block text-sm text-text-primary">
                   {profile.display_name || profile.username}
                 </span>
               </div>
