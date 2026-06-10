@@ -1236,7 +1236,9 @@ export default function AppearancePage() {
                       slug={slug}
                       size={14}
                       color={iconColor}
+                      variant="clean"
                       className="opacity-90 transform scale-75 hover:scale-80 transition-transform"
+                      fallbackUrl={url}
                     />
                   );
                 })}
@@ -1253,9 +1255,10 @@ export default function AppearancePage() {
                 >
                   <PlatformIcon
                     slug={link.icon || ''}
-                    color={link.icon_color || undefined}
+                    color={link.icon_color || btnTextColor}
                     size={14}
-                    className="shrink-0 scale-75"
+                    variant="clean"
+                    className="shrink-0"
                     fallbackUrl={link.url}
                     title={link.title}
                   />
