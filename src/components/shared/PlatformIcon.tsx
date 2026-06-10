@@ -71,21 +71,26 @@ export function PlatformIcon({
   }
 
   if (error || !slug || slug === 'link') {
-    const letter = title?.charAt(0)?.toUpperCase() || '?';
     return (
-      <div
-        className={className}
-        style={{
-          ...wrapperStyle,
-          fontFamily: 'Outfit, sans-serif',
-          fontWeight: 800,
-          fontSize: variant === 'clean' ? 14 : 16,
-          color: finalColor,
-          background: variant === 'clean' ? 'transparent' : wrapperStyle.background,
-        }}
-        title={title || fallbackUrl}
-      >
-        {letter}
+      <div className={className} style={wrapperStyle} title={title || fallbackUrl}>
+        <svg
+          role="img"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          width={size}
+          height={size}
+          fill="none"
+          stroke={finalColor}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ width: size, height: size }}
+        >
+          <title>{title || 'Web'}</title>
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+          <path d="M2 12h20" />
+        </svg>
       </div>
     );
   }
