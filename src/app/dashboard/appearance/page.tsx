@@ -21,6 +21,7 @@ import {
   Sliders,
   Sparkle,
   Trash2,
+  X,
 } from 'lucide-react';
 import type { Profile, Theme, Platform, Link, ThemeConfig } from '@/types';
 
@@ -64,6 +65,7 @@ export default function AppearancePage() {
   const [themes, setThemes] = useState<Theme[]>([]);
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [links, setLinks] = useState<Link[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -1191,11 +1193,36 @@ export default function AppearancePage() {
         )}
       </div>
 
+      {/* Pulsante anteprima per cellulare e tablet */}
+      <button
+        type="button"
+        onClick={() => setShowPreview(true)}
+        className="lg:hidden fixed bottom-5 right-5 z-40 flex items-center gap-2 px-5 py-3 rounded-full bg-[hsl(263_90%_64%)] text-white text-sm font-bold shadow-xl"
+      >
+        <Eye size={18} /> Anteprima
+      </button>
+
       {/* Live iPhone preview sticky - 5 cols */}
-      <div className="lg:col-span-5 lg:sticky lg:top-24 hidden md:flex flex-col items-center">
-        <div className="flex items-center gap-2 mb-3 self-start pl-6 text-sm text-[hsl(240_5%_70%)]">
-          <Eye size={16} />
-          Anteprima in tempo reale
+      <div
+        className={`lg:col-span-5 lg:sticky lg:top-24 hidden lg:flex flex-col items-center ${
+          showPreview
+            ? 'max-lg:flex max-lg:fixed max-lg:inset-0 max-lg:z-50 max-lg:bg-black/90 max-lg:overflow-y-auto max-lg:py-6'
+            : ''
+        }`}
+      >
+        <div className="flex items-center justify-between gap-2 mb-3 w-[300px] text-sm text-[hsl(240_5%_70%)]">
+          <span className="flex items-center gap-2">
+            <Eye size={16} />
+            Anteprima in tempo reale
+          </span>
+          <button
+            type="button"
+            onClick={() => setShowPreview(false)}
+            className="lg:hidden flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[hsl(240_15%_18%)] text-[hsl(240_10%_98%)] text-xs font-semibold"
+            aria-label="Chiudi anteprima"
+          >
+            <X size={14} /> Chiudi
+          </button>
         </div>
 
         {/* Device frame mock */}
