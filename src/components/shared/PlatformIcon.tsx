@@ -107,6 +107,23 @@ export function PlatformIcon({
     }
   }, [fallbackUrl]);
 
+  // Icona caricata dall'utente: nel campo icon c'e' direttamente l'indirizzo dell'immagine
+  if (/^https?:\/\//i.test(slug)) {
+    return (
+      <div className={className} style={wrapperStyle} title={title || fallbackUrl}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={slug}
+          alt={title || 'icona'}
+          width={size}
+          height={size}
+          style={{ width: size, height: size, objectFit: 'contain', borderRadius: '4px' }}
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+
   // Se abbiamo un dominio valido, proviamo a caricare la favicon nativa (per tutti i link)
   if (domain && !faviconError) {
     // Con l'indirizzo completo il servizio legge la favicon vera della pagina

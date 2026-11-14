@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/Badge';
 import { PlatformIcon } from '@/components/shared/PlatformIcon';
 import { detectPlatform } from '@/lib/detect-platform';
 import { Spinner } from '@/components/ui/Spinner';
+import { uploadLinkIcon } from '@/lib/avatar-upload';
 import {
   DndContext,
   closestCenter,
@@ -49,12 +50,16 @@ function SortableLink({
   onToggle,
   onDelete,
   onToggleFeature,
+  onChangeIcon,
+  onResetIcon,
   isPro,
 }: {
   link: LinkType;
   onToggle: (id: string, active: boolean) => void;
   onDelete: (id: string) => void;
   onToggleFeature: (id: string, featured: boolean) => void;
+  onChangeIcon: (id: string, file: File) => void;
+  onResetIcon: (id: string) => void;
   isPro: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -106,8 +111,31 @@ function SortableLink({
           ) : (
             <>
               {/* Platform icon */}
-              <div className="shrink-0">
-                <PlatformIcon slug={link.icon || ''} color={link.icon_color || undefined} size={24} fallbackUrl={link.url} title={link.title} />
+              <div className="shrink-0 relative group">
+                <label className="cursor-pointer block" title="Cambia icona">
+                  <PlatformIcon slug={link.icon || ''} color={link.icon_color || undefined} size={24} fallbackUrl={link.url} title={link.title} />
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) onChangeIcon(link.id, f);
+                      e.target.value = '';
+                    }}
+                  />
+                  <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[hsl(263_90%_64%)] text-white text-[10px] leading-4 text-center">✎</span>
+                </label>
+                {link.icon?.startsWith('http') && (
+                  <button
+                    type="button"
+                    onClick={() => onResetIcon(link.id)}
+                    className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-zinc-700 text-white text-[10px] leading-4 text-center"
+                    title="Torna all'icona automatica"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
 
               {/* Title & URL */}
@@ -332,6 +360,27 @@ export default function LinksPage() {
 
     setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, is_featured: featured } : l)));
     await supabase.from('links').update({ is_featured: featured }).eq('id', id);
+  }
+
+  async function handleChangeIcon(id: string, file: File) {
+    if (!profile) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert("L'immagine è troppo grande: massimo 2 MB.");
+      return;
+    }
+    try {
+      const url = await uploadLinkIcon(supabase, profile.id, id, file);
+      setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, icon: url } : l)));
+      const { error } = await supabase.from('links').update({ icon: url }).eq('id', id);
+      if (error) alert(error.message);
+    } catch {
+      alert("Non sono riuscito a caricare l'icona. Riprova con un'altra immagine (PNG, JPG o WebP).");
+    }
+  }
+
+  async function handleResetIcon(id: string) {
+    setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, icon: null } : l)));
+    await supabase.from('links').update({ icon: null }).eq('id', id);
   }
 
   async function handleDelete(id: string) {
@@ -588,6 +637,8 @@ export default function LinksPage() {
                   onToggle={handleToggle}
                   onDelete={handleDelete}
                   onToggleFeature={handleToggleFeature}
+                  onChangeIcon={handleChangeIcon}
+                  onResetIcon={handleResetIcon}
                   isPro={isPro}
                 />
               ))}

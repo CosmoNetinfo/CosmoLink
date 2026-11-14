@@ -67,3 +67,49 @@ export async function uploadAvatar(
   // Add cache buster
   return `${data.publicUrl}?t=${Date.now()}`;
 }
+
+/**
+ * Icona personalizzata di un link: quadrata 128x128 PNG, mantiene la trasparenza.
+ * Se l'immagine non e' quadrata viene centrata senza deformarla.
+ */
+export async function resizeLinkIcon(file: File): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = () => {
+      img.src = reader.result as string;
+    };
+    reader.onerror = reject;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d')!;
+      const scale = Math.min(128 / img.width, 128 / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      ctx.drawImage(img, (128 - w) / 2, (128 - h) / 2, w, h);
+      canvas.toBlob(
+        (blob) => (blob ? resolve(blob) : reject(new Error('Impossibile creare l\'icona'))),
+        'image/png'
+      );
+    };
+    img.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+export async function uploadLinkIcon(
+  supabase: ReturnType<typeof import('@/lib/supabase/client').createClient>,
+  userId: string,
+  linkId: string,
+  file: File
+): Promise<string> {
+  const blob = await resizeLinkIcon(file);
+  const filePath = `${userId}/link-icons/${linkId}-${Date.now()}.png`;
+  const { error } = await supabase.storage
+    .from('avatars')
+    .upload(filePath, blob, { contentType: 'image/png' });
+  if (error) throw error;
+  return supabase.storage.from('avatars').getPublicUrl(filePath).data.publicUrl;
+}
