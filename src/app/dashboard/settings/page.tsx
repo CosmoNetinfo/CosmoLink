@@ -18,16 +18,20 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import type { Profile } from '@/types';
+import { whatsappLink } from '@/lib/site';
 
 export default function SettingsPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [savingUsername, setSavingUsername] = useState(false);
-  const [upgrading, setUpgrading] = useState(false);
   const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
   const [usernameSuccess, setUsernameSuccess] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deletePhrase, setDeletePhrase] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   const supabase = createClient();
   const router = useRouter();
@@ -102,34 +106,36 @@ export default function SettingsPage() {
     setSavingUsername(false);
   }
 
-  // Toggle Free / PRO plan simulation
-  async function handleTogglePlan() {
-    if (!profile) return;
-
-    setUpgrading(true);
-    const newPlan = profile.plan === 'pro' ? 'free' : 'pro';
-
-    const { error } = await supabase
-      .from('profiles')
-      .update({ plan: newPlan })
-      .eq('id', profile.id);
-
-    if (error) {
-      alert(error.message);
-    } else {
-      await loadProfile();
-    }
-    setUpgrading(false);
-  }
-
-  // Delete account simulation
-  async function handleDeleteAccount() {
-    if (!profile) return;
-
-    // RLS will delete auth user cascaded if configured, here we delete profiles from client
+  // Esci dall'account (chiude solo la sessione)
+  async function handleSignOut() {
     const { error } = await supabase.auth.signOut();
     if (error) alert(error.message);
     router.push('/auth/login');
+  }
+
+  // Cancellazione definitiva: account, pagina, link e statistiche
+  async function handleDeleteAccount() {
+    if (!profile) return;
+    setDeleteError('');
+    setDeleting(true);
+    try {
+      const res = await fetch('/api/account/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirm: deletePhrase }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setDeleteError(body.error || 'Non sono riuscito a cancellare l\'account. Riprova o scrivici.');
+        setDeleting(false);
+        return;
+      }
+      await supabase.auth.signOut();
+      router.push('/');
+    } catch {
+      setDeleteError('Errore di connessione. Riprova tra poco.');
+      setDeleting(false);
+    }
   }
 
   if (loading) {
@@ -211,10 +217,17 @@ export default function SettingsPage() {
             </p>
           </div>
 
-          <Button onClick={handleTogglePlan} isLoading={upgrading} variant={profile?.plan === 'pro' ? 'ghost' : 'primary'} className="shrink-0">
-            {profile?.plan === 'pro' ? 'Downgrade a Free' : 'Ottieni PRO ⭐'}
+          <a
+            href={whatsappLink(profile?.plan === 'pro'
+              ? `Ciao, vorrei informazioni sul mio abbonamento PRO di CosmoLink (@${profile?.username})`
+              : `Ciao, vorrei attivare il piano PRO di CosmoLink (@${profile?.username})`)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold bg-[hsl(263_90%_64%)] text-white hover:opacity-90 transition-opacity"
+          >
+            {profile?.plan === 'pro' ? 'Gestisci abbonamento' : 'Attiva PRO su WhatsApp ⭐'}
             <ChevronRight size={16} />
-          </Button>
+          </a>
         </div>
       </Card>
 
@@ -227,7 +240,7 @@ export default function SettingsPage() {
 
         <div className="space-y-4">
           <p className="text-xs text-[hsl(240_5%_70%)]">
-            Uscendo dall'account chiudi solo la sessione su questo dispositivo: la tua pagina pubblica resta online. Per cancellare l'account e tutti i tuoi dati scrivici dalla pagina Privacy.
+            Uscendo dall'account chiudi solo la sessione su questo dispositivo: la tua pagina pubblica resta online. Con la cancellazione elimini per sempre account, pagina, link e statistiche.
           </p>
 
           {!deleteConfirm ? (
@@ -246,7 +259,7 @@ export default function SettingsPage() {
                 Sei sicuro di voler uscire da CosmoLink? La tua sessione verrà chiusa.
               </div>
               <div className="flex gap-2">
-                <Button onClick={handleDeleteAccount} className="bg-red-500 hover:bg-red-600 text-white">
+                <Button onClick={handleSignOut} className="bg-red-500 hover:bg-red-600 text-white">
                   Sì, Esci
                 </Button>
                 <Button variant="ghost" onClick={() => setDeleteConfirm(false)}>
@@ -255,6 +268,51 @@ export default function SettingsPage() {
               </div>
             </div>
           )}
+
+          <div className="border-t border-red-500/10 pt-4 space-y-3">
+            {!deleteOpen ? (
+              <Button
+                variant="ghost"
+                onClick={() => setDeleteOpen(true)}
+                className="hover:bg-red-500/10 hover:text-red-400 border-red-500/20 text-red-400"
+              >
+                <AlertTriangle size={16} />
+                Elimina account definitivamente
+              </Button>
+            ) : (
+              <div className="space-y-3">
+                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-400">
+                  <AlertTriangle size={16} className="shrink-0 mt-0.5" />
+                  Questa azione è irreversibile: la tua pagina, i link e le statistiche vengono cancellati. Per confermare
+                  scrivi il tuo username: <strong>{profile?.username}</strong>
+                </div>
+                <Input
+                  value={deletePhrase}
+                  onChange={(e) => setDeletePhrase(e.target.value)}
+                  placeholder={profile?.username}
+                  autoComplete="off"
+                />
+                {deleteError && (
+                  <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-xs text-red-400">
+                    {deleteError}
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleDeleteAccount}
+                    isLoading={deleting}
+                    disabled={deletePhrase !== profile?.username}
+                    className="bg-red-500 hover:bg-red-600 text-white"
+                  >
+                    Elimina per sempre
+                  </Button>
+                  <Button variant="ghost" onClick={() => { setDeleteOpen(false); setDeletePhrase(''); setDeleteError(''); }}>
+                    Annulla
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </Card>
     </div>
