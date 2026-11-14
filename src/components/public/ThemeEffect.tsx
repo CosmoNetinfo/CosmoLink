@@ -4,13 +4,15 @@ interface ThemeEffectProps {
   effect?: Effect;
   colors?: string[];
   accent: string;
+  /** true: resta dentro il contenitore (anteprima) invece di coprire tutto lo schermo */
+  contained?: boolean;
 }
 
 /**
  * Effetto animato di sfondo dei temi PRO. Solo CSS: nessun JavaScript e rispetta
  * "riduci movimento" del dispositivo (vedi globals.css).
  */
-export function ThemeEffect({ effect, colors, accent }: ThemeEffectProps) {
+export function ThemeEffect({ effect, colors, accent, contained }: ThemeEffectProps) {
   if (!effect || effect === 'none') return null;
 
   const palette = colors && colors.length > 0 ? colors : [accent];
@@ -18,7 +20,7 @@ export function ThemeEffect({ effect, colors, accent }: ThemeEffectProps) {
   const vars = { '--fx-c1': c(0), '--fx-c2': c(1) } as React.CSSProperties;
 
   return (
-    <div className="fx-layer" style={vars} aria-hidden="true">
+    <div className={contained ? 'fx-layer fx-contained' : 'fx-layer'} style={vars} aria-hidden="true">
       {effect === 'aurora' && (
         <>
           <div className="fx-aurora-band" style={{ top: '4%', background: c(0) }} />

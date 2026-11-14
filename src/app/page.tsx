@@ -31,6 +31,9 @@ export default function Home() {
       <header className="w-full max-w-6xl mx-auto px-6 h-20 flex items-center justify-between z-10">
         <Logo size="md" />
         <div className="flex items-center gap-4">
+          <a href="#prezzi" className="hidden sm:inline text-sm font-semibold text-[hsl(240_5%_70%)] hover:text-white transition-colors">
+            Prezzi
+          </a>
           <Link href="/auth/login">
             <span className="text-sm font-semibold text-[hsl(240_5%_70%)] hover:text-white transition-colors cursor-pointer">
               Accedi
@@ -162,8 +165,28 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Come funziona */}
+      <section className="w-full max-w-6xl mx-auto px-6 py-16 border-t border-[hsl(240_15%_18%)]">
+        <h2 className="text-2xl md:text-3xl font-extrabold text-center mb-10">Pronto in 3 passi</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            ['1', 'Registrati gratis', 'Scegli il tuo nome utente: sarà il tuo indirizzo.'],
+            ['2', 'Aggiungi i link e scegli il tema', 'Social, siti, video: li trascini nell’ordine che vuoi.'],
+            ['3', 'Condividi', 'Metti il link in bio o stampa il QR Code, poi guarda i clic crescere.'],
+          ].map(([n, t, d]) => (
+            <div key={n} className="text-center space-y-3">
+              <div className="mx-auto w-11 h-11 rounded-full bg-[hsl(263_90%_64%)/0.15] border border-[hsl(263_90%_64%)/0.3] flex items-center justify-center font-black text-[hsl(263_90%_75%)]">
+                {n}
+              </div>
+              <h3 className="text-lg font-bold text-white">{t}</h3>
+              <p className="text-sm text-[hsl(240_5%_70%)]">{d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Pricing Section */}
-      <section className="w-full py-20 bg-[hsl(240_20%_6%)] border-t border-[hsl(240_15%_18%)] relative">
+      <section id="prezzi" className="w-full py-20 bg-[hsl(240_20%_6%)] border-t border-[hsl(240_15%_18%)] relative">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-[hsl(240_10%_98%)] to-[hsl(263_90%_75%)] bg-clip-text text-transparent">
@@ -250,7 +273,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Zap size={16} className="text-purple-400 shrink-0" />
-                    <span>Tutti i temi, anche quelli esclusivi</span>
+                    <span>Tutti i temi, con sfondi animati (aurora, stelle, bolle di luce)</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Zap size={16} className="text-purple-400 shrink-0" />
@@ -324,7 +347,7 @@ export default function Home() {
                     </li>
                     <li className="flex items-center gap-2.5">
                       <Zap size={16} className="text-purple-400 shrink-0" />
-                      <span>Tutti i temi, anche quelli esclusivi</span>
+                      <span>Tutti i temi, con sfondi animati (aurora, stelle, bolle di luce)</span>
                     </li>
                     <li className="flex items-center gap-2.5">
                       <Zap size={16} className="text-purple-400 shrink-0" />
