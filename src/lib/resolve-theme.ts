@@ -50,6 +50,13 @@ export function normalizeThemeConfig(raw: any): ThemeConfig {
   // Determine socials style
   const socialsStyle = raw.socials_style || raw.social_style || 'brand';
 
+  // Effetto animato di sfondo
+  const rawEffect = raw.effect;
+  const effect = (['aurora', 'stars', 'grid', 'grain', 'orbs'] as const).find((e) => e === rawEffect) ?? 'none';
+  const effectColors = Array.isArray(raw.effect_colors)
+    ? raw.effect_colors.filter((c: unknown) => typeof c === 'string').slice(0, 4)
+    : [];
+
   return {
     background: {
       type: bgType,
@@ -75,6 +82,8 @@ export function normalizeThemeConfig(raw: any): ThemeConfig {
       thickness: ringThickness as any,
     },
     socials_style: socialsStyle,
+    effect,
+    effect_colors: effectColors,
   };
 }
 
@@ -118,6 +127,10 @@ export function resolveTheme(profile: Profile, themes: Theme[]): ThemeConfig {
 
     // Free users cannot customize social style (always brand colors)
     config.socials_style = 'brand';
+
+    // Gli effetti animati sono solo PRO
+    config.effect = 'none';
+    config.effect_colors = [];
   }
 
   return config;

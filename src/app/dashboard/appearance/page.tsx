@@ -635,7 +635,7 @@ export default function AppearancePage() {
                         </span>
                         {theme.is_pro && (
                           <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20">
-                            PRO
+                            {normConfig.effect && normConfig.effect !== 'none' ? 'PRO ✨' : 'PRO'}
                           </span>
                         )}
                       </div>

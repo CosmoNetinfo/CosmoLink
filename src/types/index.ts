@@ -71,7 +71,13 @@ export interface ThemeConfig {
     thickness?: '0px' | '2px' | '3px' | '4px'; // pro only
   };
   socials_style?: 'brand' | 'white' | 'black';
+  /** Effetto animato di sfondo (solo PRO) */
+  effect?: ThemeEffect;
+  /** Colori usati dall'effetto (opzionali, altrimenti usa il colore d'accento) */
+  effect_colors?: string[];
 }
+
+export type ThemeEffect = 'none' | 'aurora' | 'stars' | 'grid' | 'grain' | 'orbs';
 
 export type CustomTheme = ThemeConfig;
 
