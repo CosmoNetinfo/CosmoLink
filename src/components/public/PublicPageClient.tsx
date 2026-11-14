@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { PlatformIcon } from '@/components/shared/PlatformIcon';
 import { trackView, trackClick } from '@/lib/analytics';
 import { themeToCSS } from '@/lib/resolve-theme';
+import { ThemeEffect } from '@/components/public/ThemeEffect';
 import { Logo } from '@/components/shared/Logo';
 import { safeUrl } from '@/lib/safe-url';
 import { SITE_URL } from '@/lib/site';
@@ -152,7 +153,14 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
         />
       </div>
 
-      <div className="w-full max-w-lg px-4 py-12 flex-1 flex flex-col items-center">
+      {/* Effetto animato di sfondo (solo temi PRO) */}
+      <ThemeEffect
+        effect={themeConfig?.effect}
+        colors={themeConfig?.effect_colors}
+        accent={accentColor}
+      />
+
+      <div className="relative z-10 w-full max-w-lg px-4 py-12 flex-1 flex flex-col items-center">
         {/* Avatar */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
