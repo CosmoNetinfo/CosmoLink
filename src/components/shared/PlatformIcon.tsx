@@ -88,35 +88,48 @@ export function PlatformIcon({
     };
   }, [variant, size, finalColor]);
 
-  const [faviconError, setFaviconError] = useState(false);
+  // 0 = servizio favicon (pagina intera), 1 = favicon.ico del sito, 2 = icona generica
+  const [faviconStage, setFaviconStage] = useState(0);
+  const faviconError = faviconStage >= 2;
 
-  // Estrae l'host dal link per recuperare la favicon
-  const domain = React.useMemo(() => {
-    if (!fallbackUrl) return '';
+  // Estrae host, indirizzo completo e origine dal link per recuperare la favicon
+  const { domain, fullUrl, origin } = React.useMemo(() => {
+    if (!fallbackUrl) return { domain: '', fullUrl: '', origin: '' };
     try {
       let url = fallbackUrl.trim();
       if (!/^https?:\/\//i.test(url)) {
         url = 'https://' + url;
       }
-      return new URL(url).hostname;
+      const u = new URL(url);
+      return { domain: u.hostname, fullUrl: u.href, origin: u.origin };
     } catch {
-      return '';
+      return { domain: '', fullUrl: '', origin: '' };
     }
   }, [fallbackUrl]);
 
   // Se abbiamo un dominio valido, proviamo a caricare la favicon nativa (per tutti i link)
   if (domain && !faviconError) {
-    const faviconUrl = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+    // Con l'indirizzo completo il servizio legge la favicon vera della pagina
+    // (serve per siti su github.io, vercel.app ecc. dove l'host da solo non basta).
+    const faviconUrl =
+      faviconStage === 0
+        ? `https://www.google.com/s2/favicons?sz=128&domain_url=${encodeURIComponent(fullUrl)}`
+        : `${origin}/favicon.ico`;
     return (
       <div className={className} style={wrapperStyle} title={title || fallbackUrl}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          key={faviconStage}
           src={faviconUrl}
           alt={title || slug || 'favicon'}
           width={size}
           height={size}
           style={{ width: size, height: size, objectFit: 'contain', borderRadius: '4px' }}
-          onError={() => setFaviconError(true)}
+          onLoad={(e) => {
+            // Il servizio restituisce un globo 16x16 quando non trova la favicon: passiamo al passo dopo
+            if (faviconStage === 0 && e.currentTarget.naturalWidth <= 16) setFaviconStage(1);
+          }}
+          onError={() => setFaviconStage((st) => st + 1)}
           loading="lazy"
         />
       </div>
