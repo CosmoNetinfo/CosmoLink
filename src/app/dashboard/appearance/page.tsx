@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
 import { PlatformIcon } from '@/components/shared/PlatformIcon';
+import { ThemeEffect } from '@/components/public/ThemeEffect';
 import { uploadAvatar } from '@/lib/avatar-upload';
 import { themeToCSS, normalizeThemeConfig } from '@/lib/resolve-theme';
 import {
@@ -404,6 +405,14 @@ export default function AppearancePage() {
     }
     return { background: '#0f0f18' };
   }, [bgType, bgColor, bgGradA, bgGradB, bgGradAngle, bgImage]);
+
+  // Effetto animato del tema scelto (solo se il tema e' PRO e il profilo e' PRO)
+  const previewEffectConfig = useMemo(() => {
+    const t = themes.find((x) => x.slug === themeSlug);
+    if (!t || !t.is_pro || profile?.plan === 'free') return null;
+    const c = normalizeThemeConfig(t.config);
+    return c.effect && c.effect !== 'none' ? c : null;
+  }, [themes, themeSlug, profile?.plan]);
 
   const previewFontClass = useMemo(() => {
     const fonts: Record<string, string> = {
@@ -1234,12 +1243,21 @@ export default function AppearancePage() {
 
           {/* User page emulation screen */}
           <div
-            className={`flex-1 flex flex-col items-center px-4 pt-10 pb-6 overflow-y-auto select-none no-scrollbar ${previewFontClass}`}
+            className={`flex-1 relative isolate flex flex-col items-center px-4 pt-10 pb-6 overflow-y-auto select-none no-scrollbar ${previewFontClass}`}
             style={{
               ...previewBgStyle,
               color: usrNameColor,
             }}
           >
+            {previewEffectConfig && (
+              <ThemeEffect
+                contained
+                effect={previewEffectConfig.effect}
+                colors={previewEffectConfig.effect_colors}
+                accent={btnBgColor}
+              />
+            )}
+
             {/* Mascot background pulse */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden -z-10 opacity-10">
               <div className="absolute top-1/4 left-1/4 w-40 h-40 rounded-full bg-[hsl(263_90%_64%)] blur-[50px]" />

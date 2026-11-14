@@ -118,6 +118,12 @@ body {
   overflow: hidden;
 }
 
+/* Versione per l'anteprima: dentro lo schermo del telefono */
+.fx-layer.fx-contained {
+  position: absolute;
+  z-index: -1;
+}
+
 /* Aurora: fasce di luce che ondeggiano */
 .fx-aurora-band {
   position: absolute;

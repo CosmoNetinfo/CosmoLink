@@ -62,22 +62,13 @@ export const metadata: Metadata = {
       "CosmoLink è la piattaforma link-in-bio definitiva: personalizza la tua pagina, traccia le visite, condividi i tuoi link in stile cosmico.",
     url: SITE_URL,
     siteName: "CosmoLink",
-    images: [
-      {
-        url: "/mascot-favicon.png",
-        width: 711,
-        height: 721,
-        alt: "CosmoLink Mascot",
-      },
-    ],
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "CosmoLink — Il tuo universo di link",
     description:
       "CosmoLink è la piattaforma link-in-bio definitiva: personalizza la tua pagina, traccia le visite, condividi i tuoi link in stile cosmico.",
-    images: ["/mascot-favicon.png"],
   },
 };
 
