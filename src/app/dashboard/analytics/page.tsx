@@ -64,7 +64,6 @@ export default function AnalyticsPage() {
       const now = new Date();
       const cutoff = new Date();
       cutoff.setDate(now.getDate() - (period === '7d' ? 7 : 30));
-      const cutoffStr = cutoff.toISOString();
 
       // Retrieve views & clicks in single query requests
       const [
@@ -75,13 +74,11 @@ export default function AnalyticsPage() {
         supabase
           .from('profile_views')
           .select('*')
-          .eq('user_id', user.id)
-          .gte('created_at', cutoffStr),
+          .eq('user_id', user.id),
         supabase
           .from('link_clicks')
           .select('*')
-          .eq('user_id', user.id)
-          .gte('created_at', cutoffStr),
+          .eq('user_id', user.id),
         supabase
           .from('links')
           .select('id, title, url')
@@ -92,8 +89,16 @@ export default function AnalyticsPage() {
         console.error(ve || ce);
       }
 
-      const viewsArr = views || [];
-      const clicksArr = clicks || [];
+      // Nel database la data si chiama viewed_at / clicked_at: filtriamo qui per essere
+      // indipendenti dal nome della colonna.
+      const eventDate = (r: Record<string, string | undefined>): string =>
+        r.clicked_at ?? r.viewed_at ?? r.created_at ?? '';
+      const inPeriod = (r: Record<string, string | undefined>): boolean => {
+        const d = eventDate(r);
+        return d !== '' && new Date(d) >= cutoff;
+      };
+      const viewsArr = (views || []).filter(inPeriod);
+      const clicksArr = (clicks || []).filter(inPeriod);
       const linksArr = rawLinks || [];
 
       setViewsCount(viewsArr.length);
@@ -110,12 +115,12 @@ export default function AnalyticsPage() {
       }
 
       viewsArr.forEach((v) => {
-        const key = v.created_at.split('T')[0];
+        const key = eventDate(v).split('T')[0];
         if (dateMap[key]) dateMap[key].Visualizzazioni += 1;
       });
 
       clicksArr.forEach((c) => {
-        const key = c.created_at.split('T')[0];
+        const key = eventDate(c).split('T')[0];
         if (dateMap[key]) dateMap[key].Clic += 1;
       });
 

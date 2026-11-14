@@ -41,12 +41,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
     }
 
-    await supabase.from('profile_views').insert({
+    const { error: insertError } = await supabase.from('profile_views').insert({
       user_id: profile.id,
       device,
       browser,
       referrer,
     });
+
+    if (insertError) {
+      console.error('track/view: insert failed', insertError.message);
+      return NextResponse.json({ error: 'Insert failed' }, { status: 500 });
+    }
 
     return NextResponse.json({ ok: true });
   } catch {
