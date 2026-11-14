@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, DM_Sans, Syne, Playfair_Display, Space_Mono, Nunito } from "next/font/google";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -40,6 +41,7 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "CosmoLink — Il tuo universo di link",
   description:
     "CosmoLink è la piattaforma link-in-bio definitiva: personalizza la tua pagina, traccia le visite, condividi i tuoi link in stile cosmico.",
@@ -58,7 +60,7 @@ export const metadata: Metadata = {
     title: "CosmoLink — Il tuo universo di link",
     description:
       "CosmoLink è la piattaforma link-in-bio definitiva: personalizza la tua pagina, traccia le visite, condividi i tuoi link in stile cosmico.",
-    url: "https://cosmo-link.vercel.app",
+    url: SITE_URL,
     siteName: "CosmoLink",
     images: [
       {

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Logo } from '@/components/shared/Logo';
+import { PRICING, whatsappLink } from '@/lib/site';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Check, ArrowLeft, Sparkles, MessageCircle, RefreshCw } from 'lucide-react';
@@ -48,17 +49,17 @@ export default function PricingPage() {
       return;
     }
 
-    const phone = '393517064080'; // +39 351 706 4080 without + and spaces
-    const message = encodeURIComponent(
-      `Ciao, voglio attivare CosmoLink PRO per l'account ${username}.`
+    window.open(
+      whatsappLink(`Ciao, voglio attivare CosmoLink PRO per l'account ${username}.`),
+      '_blank',
+      'noopener,noreferrer'
     );
-    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
   }
 
   const freeFeatures = [
     'Fino a 5 link attivi contemporaneamente',
     'Tipi blocco Standard (link, intestazione, divisore)',
-    '4 temi preimpostati (Cosmo Dark, Light, Purple, Cyber)',
+    'Temi gratuiti inclusi',
     'Upload immagine avatar',
     'Riga contatti social configurabile',
     'Codice QR con mascotte standard (bianco e nero)',
@@ -66,7 +67,7 @@ export default function PricingPage() {
 
   const proFeatures = [
     'Link illimitati attivi contemporaneamente',
-    '10 temi preimpostati premium',
+    'Tutti i temi premium',
     'Customizzazione completa dell\'aspetto (colori, gradienti, sfondi)',
     'Upload sfondi personalizzati (immagini)',
     'Pulsanti con stili speciali (vetro, contorno, morbido)',
@@ -163,9 +164,12 @@ export default function PricingPage() {
                 </span>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold text-white">€29</span>
+                <span className="text-4xl font-extrabold text-white">{PRICING.yearly.price}</span>
                 <span className="text-sm text-[hsl(240_5%_48%)]">/ anno</span>
               </div>
+              <p className="text-xs text-[hsl(240_5%_60%)]">
+                oppure {PRICING.monthly.price} {PRICING.monthly.period}
+              </p>
               <p className="text-xs text-[hsl(240_5%_70%)]">Crea una landing page unica, professionale e personalizzata al 100%.</p>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col justify-between space-y-6 pt-6 relative z-10">
@@ -215,7 +219,13 @@ export default function PricingPage() {
       {/* Footer */}
       <footer className="w-full max-w-6xl mx-auto px-6 py-8 border-t border-[hsl(240_15%_18%)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[hsl(240_5%_48%)] bg-[hsl(240_25%_4%)]">
         <Logo size="sm" />
-        <p>© 2026 CosmoLink. Tutti i diritti riservati.</p>
+        <div className="flex flex-col items-center sm:items-end gap-1">
+          <p>© 2026 CosmoLink. Tutti i diritti riservati.</p>
+          <p className="flex items-center gap-3">
+            <Link href="/privacy" className="hover:text-white hover:underline">Privacy</Link>
+            <Link href="/termini" className="hover:text-white hover:underline">Termini</Link>
+          </p>
+        </div>
       </footer>
     </div>
   );

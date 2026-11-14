@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Logo } from '@/components/shared/Logo';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { PRICING, LAUNCH_OFFER_ACTIVE, whatsappLink } from '@/lib/site';
 import {
   Link2,
   Sparkles,
@@ -70,7 +71,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-base sm:text-lg text-[hsl(240_5%_70%)] leading-relaxed"
           >
-            Crea una splendida pagina bio personalizzabile in pochi secondi. Condividi link, analizza i clic, genera QR Code ed esplora temi dal design spaziale. Tutto gratis.
+            Crea una splendida pagina bio personalizzabile in pochi secondi. Condividi link, analizza i clic, genera QR Code ed esplora temi dal design spaziale. Gratis per sempre, con un piano PRO opzionale.
           </motion.p>
 
           <motion.div
@@ -105,7 +106,7 @@ export default function Home() {
             </span>
             <span className="flex items-center gap-1.5">
               <ShieldCheck size={14} className="text-emerald-400" />
-              SSL protetto al 100%
+              Connessione sicura HTTPS
             </span>
           </motion.div>
         </div>
@@ -133,9 +134,9 @@ export default function Home() {
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400">
               <Link2 size={20} />
             </div>
-            <h3 className="text-lg font-bold text-white">Link illimitati</h3>
+            <h3 className="text-lg font-bold text-white">Tutti i tuoi link</h3>
             <p className="text-sm text-[hsl(240_5%_70%)]">
-              Organizza, aggiungi ed attiva tutti i tuoi profili social in pochi istanti con autodetect intelligente dei brand.
+              Raccogli profili social e siti in un&apos;unica pagina: le icone dei brand vengono riconosciute da sole.
             </p>
           </Card>
 
@@ -145,7 +146,7 @@ export default function Home() {
             </div>
             <h3 className="text-lg font-bold text-white">Statistiche in tempo reale</h3>
             <p className="text-sm text-[hsl(240_5%_70%)]">
-              Analizza le visualizzazioni complessive, il click-through-rate ed il comportamento degli utenti.
+              Controlla visite, clic e tasso di clic per capire cosa funziona davvero.
             </p>
           </Card>
 
@@ -153,9 +154,9 @@ export default function Home() {
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
               <QrCode size={20} />
             </div>
-            <h3 className="text-lg font-bold text-white">Mascot QR Code</h3>
+            <h3 className="text-lg font-bold text-white">QR Code con mascotte</h3>
             <p className="text-sm text-[hsl(240_5%_70%)]">
-              Genera codici QR vettoriali con l'iconica mascotte cosmica aliena al centro da stampare e scaricare.
+              Genera codici QR con la mascotte aliena al centro, da stampare o scaricare.
             </p>
           </Card>
         </div>
@@ -194,7 +195,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check size={16} className="text-emerald-400 shrink-0" />
-                    <span>4 temi</span>
+                    <span>Temi gratuiti inclusi</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check size={16} className="text-emerald-400 shrink-0" />
@@ -202,7 +203,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check size={16} className="text-emerald-400 shrink-0" />
-                    <span>Analytics base</span>
+                    <span>Statistiche di base</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check size={16} className="text-emerald-400 shrink-0" />
@@ -210,7 +211,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check size={16} className="text-emerald-400 shrink-0" />
-                    <span>Link social</span>
+                    <span>Icone dei tuoi social</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check size={16} className="text-emerald-400 shrink-0" />
@@ -234,22 +235,22 @@ export default function Home() {
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">PRO</h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-black text-white">€4,99</span>
-                    <span className="text-sm text-[hsl(240_5%_60%)]">al mese</span>
+                    <span className="text-4xl font-black text-white">{PRICING.monthly.price}</span>
+                    <span className="text-sm text-[hsl(240_5%_60%)]">{PRICING.monthly.period}</span>
                   </div>
                 </div>
 
                 <hr className="border-[hsl(240_15%_15%)]" />
 
                 <ul className="space-y-3.5 text-sm text-[hsl(240_5%_80%)]">
-                  <li className="text-[hsl(263_90%_75%)] text-xs font-semibold uppercase tracking-wider mb-2">Tutto Free +</li>
+                  <li className="text-[hsl(263_90%_75%)] text-xs font-semibold uppercase tracking-wider mb-2">Tutto il piano Free, più:</li>
                   <li className="flex items-center gap-2.5">
                     <Zap size={16} className="text-purple-400 shrink-0" />
                     <span>Link illimitati</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Zap size={16} className="text-purple-400 shrink-0" />
-                    <span>Tutti i 16 temi</span>
+                    <span>Tutti i temi, anche quelli esclusivi</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Zap size={16} className="text-purple-400 shrink-0" />
@@ -257,7 +258,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Zap size={16} className="text-purple-400 shrink-0" />
-                    <span>Analytics avanzate</span>
+                    <span>Statistiche avanzate</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Zap size={16} className="text-purple-400 shrink-0" />
@@ -273,13 +274,13 @@ export default function Home() {
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Zap size={16} className="text-purple-400 shrink-0" />
-                    <span>Rimozione branding</span>
+                    <span>Senza il marchio CosmoLink</span>
                   </li>
                 </ul>
               </div>
 
               <div className="mt-8">
-                <a href="https://wa.me/393517064080?text=Ciao,%20voglio%20attivare%20CosmoLink%20PRO%20mensile" target="_blank" rel="noopener noreferrer" className="w-full block">
+                <a href={whatsappLink('Ciao, voglio attivare CosmoLink PRO mensile')} target="_blank" rel="noopener noreferrer" className="w-full block">
                   <Button className="w-full py-6 rounded-xl font-semibold bg-gradient-to-r from-[hsl(263_90%_64%)] to-[hsl(263_90%_50%)] hover:from-[hsl(263_90%_70%)] hover:to-[hsl(263_90%_55%)] transition-all text-white border-0">
                     Passa a PRO
                   </Button>
@@ -298,10 +299,10 @@ export default function Home() {
                     <div>
                       <h3 className="text-xl font-bold text-white mb-2">PRO Annuale</h3>
                       <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-black text-white">€39,99</span>
-                        <span className="text-sm text-[hsl(240_5%_60%)]">all'anno</span>
+                        <span className="text-4xl font-black text-white">{PRICING.yearly.price}</span>
+                        <span className="text-sm text-[hsl(240_5%_60%)]">{PRICING.yearly.period}</span>
                       </div>
-                      <p className="text-xs text-[hsl(240_5%_55%)] mt-1">equivale a €3,33/mese</p>
+                      <p className="text-xs text-[hsl(240_5%_55%)] mt-1">equivale a {PRICING.yearly.perMonth}/mese</p>
                     </div>
                     <span className="bg-gradient-to-r from-purple-500 to-cyan-500 text-[10px] font-bold text-white px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
                       CONSIGLIATO
@@ -310,20 +311,20 @@ export default function Home() {
 
                   <div className="bg-[rgba(168,85,247,0.08)] border border-purple-500/20 rounded-xl p-3 flex items-center gap-2">
                     <span className="text-base">🔥</span>
-                    <span className="text-xs font-semibold text-purple-300">Risparmi €20 — 2 mesi gratis</span>
+                    <span className="text-xs font-semibold text-purple-300">Risparmi circa {PRICING.yearly.saving} rispetto al piano mensile</span>
                   </div>
 
                   <hr className="border-[hsl(240_15%_15%)]" />
 
                   <ul className="space-y-3.5 text-sm text-[hsl(240_5%_80%)]">
-                    <li className="text-[hsl(263_90%_75%)] text-xs font-semibold uppercase tracking-wider mb-2">Stesse features del PRO Mensile</li>
+                    <li className="text-[hsl(263_90%_75%)] text-xs font-semibold uppercase tracking-wider mb-2">Le stesse funzioni del PRO mensile</li>
                     <li className="flex items-center gap-2.5">
                       <Zap size={16} className="text-purple-400 shrink-0" />
                       <span>Link illimitati</span>
                     </li>
                     <li className="flex items-center gap-2.5">
                       <Zap size={16} className="text-purple-400 shrink-0" />
-                      <span>Tutti i 16 temi</span>
+                      <span>Tutti i temi, anche quelli esclusivi</span>
                     </li>
                     <li className="flex items-center gap-2.5">
                       <Zap size={16} className="text-purple-400 shrink-0" />
@@ -331,7 +332,7 @@ export default function Home() {
                     </li>
                     <li className="flex items-center gap-2.5">
                       <Zap size={16} className="text-purple-400 shrink-0" />
-                      <span>Analytics avanzate</span>
+                      <span>Statistiche avanzate</span>
                     </li>
                     <li className="flex items-center gap-2.5">
                       <Zap size={16} className="text-purple-400 shrink-0" />
@@ -347,13 +348,13 @@ export default function Home() {
                     </li>
                     <li className="flex items-center gap-2.5">
                       <Zap size={16} className="text-purple-400 shrink-0" />
-                      <span>Rimozione branding</span>
+                      <span>Senza il marchio CosmoLink</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="mt-8">
-                  <a href="https://wa.me/393517064080?text=Ciao,%20voglio%20attivare%20CosmoLink%20PRO%20annuale" target="_blank" rel="noopener noreferrer" className="w-full block">
+                  <a href={whatsappLink('Ciao, voglio attivare CosmoLink PRO annuale')} target="_blank" rel="noopener noreferrer" className="w-full block">
                     <Button className="w-full py-6 rounded-xl font-semibold bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90 transition-all text-white border-0 shadow-lg shadow-purple-500/20">
                       Passa a PRO Annuale
                     </Button>
@@ -363,21 +364,23 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Promo Launch Banner */}
+          {/* Promo Launch Banner (si spegne con LAUNCH_OFFER_ACTIVE in src/lib/site.ts) */}
+          {LAUNCH_OFFER_ACTIVE && (
           <div className="mt-12 bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 rounded-[14px] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl relative overflow-hidden">
             <div className="absolute inset-0 bg-white/5 backdrop-blur-[1px] pointer-events-none" />
             <div className="relative z-10 space-y-1 text-center md:text-left">
               <h4 className="text-lg md:text-xl font-bold text-white">🚀 Offerta lancio</h4>
               <p className="text-sm text-white/90">
-                Per i primi 3 mesi il piano PRO Annuale è a €29,99. Scrivici su WhatsApp per approfittarne.
+                PRO Annuale a {PRICING.launch.price} per i primi abbonati. Scrivici su WhatsApp per approfittarne.
               </p>
             </div>
-            <a href="https://wa.me/393517064080?text=Ciao,%20voglio%20attivare%20l%27offerta%20lancio%20CosmoLink%20PRO%20annuale" target="_blank" rel="noopener noreferrer" className="relative z-10 w-full md:w-auto shrink-0">
+            <a href={whatsappLink("Ciao, voglio attivare l'offerta lancio CosmoLink PRO annuale")} target="_blank" rel="noopener noreferrer" className="relative z-10 w-full md:w-auto shrink-0">
               <button className="inline-flex items-center justify-center w-full md:w-auto px-6 py-3.5 text-sm rounded-xl bg-white text-purple-700 hover:bg-white/90 font-bold transition-all duration-200 border-0 shadow-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[hsl(240_25%_4%)] focus:ring-white">
                 Approfitta dell'offerta
               </button>
             </a>
           </div>
+          )}
         </div>
       </section>
 
@@ -386,6 +389,11 @@ export default function Home() {
         <Logo size="md" />
         <div className="flex flex-col sm:items-end items-center gap-1">
           <p>© 2026 CosmoLink. Tutti i diritti riservati.</p>
+          <p className="flex items-center gap-3">
+            <Link href="/privacy" className="hover:text-white hover:underline">Privacy</Link>
+            <Link href="/termini" className="hover:text-white hover:underline">Termini</Link>
+            <Link href="/pricing" className="hover:text-white hover:underline">Prezzi</Link>
+          </p>
           <p className="text-sm opacity-80">
             Realizzato da{' '}
             <a

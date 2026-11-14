@@ -14,7 +14,7 @@ Alternativa italiana gratuita a Linktree — crea la tua pagina link-in-bio pers
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=flat-square&logo=typescript)](https://typescriptlang.org)
 [![Ecosistema CosmoNet](https://img.shields.io/badge/Ecosistema-CosmoNet-6c5ce7?style=flat-square)](https://cosmonet.info)
 
-[🚀 Demo live](#) · [📖 Documentazione](#come-funziona) · [🐛 Segnala un bug](#) · [💬 Contatto](https://wa.me/393517064080)
+[🚀 Demo live](https://cosmo-link.vercel.app) · [📖 Documentazione](#come-funziona) · [🐛 Segnala un bug](#) · [💬 Contatto](https://wa.me/393517064080)
 
 </div>
 
@@ -29,9 +29,9 @@ Alternativa italiana gratuita a Linktree — crea la tua pagina link-in-bio pers
 ## ✨ Funzionalità
 
 ### Piano Free
-- ✅ Pagina pubblica personalizzata su `cosmolink.app/username`
+- ✅ Pagina pubblica personalizzata su `<dominio>/username`
 - ✅ Fino a **5 link** con icone social auto-rilevate (150+ piattaforme)
-- ✅ **4 temi** predefiniti (Cosmo Dark, Arctic, Forest, Sand)
+- ✅ **Temi gratuiti** inclusi (i temi con `is_pro = false` nella tabella `themes`)
 - ✅ Upload avatar (resize automatico 200×200px lato client)
 - ✅ Link social nel profilo (Instagram, Twitter, YouTube, GitHub...)
 - ✅ Analytics base: visite e click totali
@@ -40,7 +40,7 @@ Alternativa italiana gratuita a Linktree — crea la tua pagina link-in-bio pers
 
 ### Piano PRO
 - ⚡ **Link illimitati**
-- ⚡ **10 temi** (+ 6 esclusivi: Nebula, Solar, Rose, Ocean, Neon City, Mono)
+- ⚡ **Tutti i temi**, anche quelli esclusivi (`is_pro = true`)
 - ⚡ Personalizzazione completa: sfondo, colori, font, stile bottoni, border radius
 - ⚡ Embed video YouTube e Vimeo nella pagina pubblica
 - ⚡ Link programmati (attivazione/disattivazione automatica per data)
@@ -81,8 +81,8 @@ Alternativa italiana gratuita a Linktree — crea la tua pagina link-in-bio pers
 ### 1. Clona il repository
 
 ```bash
-git clone https://github.com/CosmoNetinfo/cosmolink.git
-cd cosmolink
+git clone https://github.com/CosmoNetinfo/CosmoLink.git
+cd CosmoLink
 ```
 
 ### 2. Installa le dipendenze
@@ -100,6 +100,9 @@ NEXT_PUBLIC_SUPABASE_URL=https://tuoprogetto.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=la_tua_anon_key
 SUPABASE_SERVICE_ROLE_KEY=la_tua_service_role_key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+# Facoltative:
+CRON_SECRET=un_segreto_lungo        # protegge /api/cron/keep-alive e i dettagli di /api/health
+ADMIN_EMAILS=tua@email.it           # chi può aprire /dashboard/admin
 NEXT_PUBLIC_MASCOT_URL=/mascot.png
 NEXT_PUBLIC_MASCOT_LOGO_URL=/mascot-logo.png
 ```
@@ -119,6 +122,8 @@ supabase/migrations/005_themes.sql
 supabase/migrations/006_storage.sql
 supabase/migrations/007_seed_platforms.sql
 supabase/migrations/008_seed_themes.sql
+supabase/migrations/009_stripe_columns.sql
+supabase/migrations/010_security_hardening.sql
 ```
 
 ### 5. Avvia il server di sviluppo
@@ -164,8 +169,9 @@ cosmolink/
 
 ## 🎨 Temi disponibili
 
-| Tema | Piano | Mood |
-|---|---|---|
+I temi (gratuiti e PRO) sono definiti in `supabase/migrations/008_seed_themes.sql`: il flag `is_pro` decide quali sono riservati al piano PRO.
+
+---|---|---|
 | Cosmo Dark | Free | Scuro, spaziale, vibrante — tema ufficiale CosmoNet |
 | Arctic | Free | Chiaro, pulito, professionale |
 | Forest | Free | Verde profondo, natura e focus |
@@ -198,7 +204,7 @@ links          → link dell'utente con posizione e stato
 link_clicks    → tracciamento click (analytics)
 profile_views  → tracciamento visite profilo
 platforms      → 150 piattaforme con brand color e pattern URL
-themes         → 10 temi preset con configurazione JSON completa
+themes         → temi preset (gratuiti e PRO) con configurazione JSON completa
 ```
 
 Tutte le tabelle hanno **Row Level Security (RLS)** attivo su Supabase.

@@ -56,9 +56,10 @@ export default async function UserPage({ params }: PageProps) {
   const supabase = await createClient();
 
   // Load profile
+  // Colonne esplicite: stripe_customer_id / stripe_subscription_id non devono mai finire nella pagina
   const { data: profile } = await supabase
     .from('profiles')
-    .select('*')
+    .select('id, username, display_name, bio, avatar_url, theme_slug, custom_theme, social_links, plan, is_verified, created_at, updated_at')
     .eq('username', username)
     .single();
 
