@@ -213,7 +213,7 @@ export default function SettingsPage() {
             <p className="text-xs text-[hsl(240_5%_70%)] max-w-lg">
               {profile?.plan === 'pro'
                 ? 'Hai accesso completo a link illimitati, temi personalizzati sbloccati, statistiche sui dispositivi, tag ed elementi di integrazione avanzati.'
-                : 'Il piano Free ti consente di caricare fino a 5 link e utilizzare i 4 favolosi temi base. Passa a PRO per sbloccare l\'intero potenziale cosmic.'}
+                : 'Il piano Free ti consente di caricare fino a 5 link e utilizzare i 12 temi gratuiti. Passa a PRO per sbloccare tutti i temi, i colori e i font personalizzati.'}
             </p>
           </div>
 

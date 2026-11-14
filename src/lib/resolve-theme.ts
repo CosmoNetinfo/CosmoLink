@@ -89,7 +89,9 @@ export function resolveTheme(profile: Profile, themes: Theme[]): ThemeConfig {
     config = normalizeThemeConfig(profile.custom_theme);
   } else {
     const preset = themes.find((t) => t.slug === profile.theme_slug);
-    config = preset ? normalizeThemeConfig(preset.config) : { ...defaultTheme };
+    // Un tema PRO non si applica a un profilo Free (anche se il valore e' stato scritto a mano)
+    const usable = preset && !(preset.is_pro && profile.plan === 'free');
+    config = usable ? normalizeThemeConfig(preset.config) : { ...defaultTheme };
   }
 
   // Enforce restrictions for free plan users

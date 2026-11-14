@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import PublicPageClient from '@/components/public/PublicPageClient';
 import { resolveTheme } from '@/lib/resolve-theme';
+import { SITE_URL } from '@/lib/site';
 
 export const revalidate = 60; // ISR: regenerate every 60 seconds
 
@@ -24,8 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: 'Utente non trovato — CosmoLink' };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  const ogImageUrl = `${siteUrl}/api/og/${username}`;
+  const ogImageUrl = `${SITE_URL}/api/og/${username}`;
 
   return {
     title: `${profile.display_name || profile.username} — CosmoLink`,
