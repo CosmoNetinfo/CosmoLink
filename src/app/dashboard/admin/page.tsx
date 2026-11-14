@@ -4,6 +4,7 @@ import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { ShieldAlert, Users, Star, Link as LinkIcon, Search, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { setUserPlan } from './actions';
 
 interface PageProps {
   searchParams: Promise<{ q?: string }>;
@@ -153,12 +154,13 @@ export default async function AdminDashboard({ searchParams }: PageProps) {
                 <th className="py-4 px-6 font-semibold">Stato Piano</th>
                 <th className="py-4 px-6 font-semibold text-center">Link Totali</th>
                 <th className="py-4 px-6 font-semibold">Data Registrazione</th>
+                <th className="py-4 px-6 font-semibold text-right">Azioni</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[hsl(240_15%_18%)]">
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-[hsl(240_5%_48%)] bg-[hsl(240_20%_12%)/0.1]">
+                  <td colSpan={6} className="py-12 text-center text-[hsl(240_5%_48%)] bg-[hsl(240_20%_12%)/0.1]">
                     Nessun utente trovato con i criteri di ricerca.
                   </td>
                 </tr>
@@ -203,6 +205,22 @@ export default async function AdminDashboard({ searchParams }: PageProps) {
                         month: 'short',
                         year: 'numeric',
                       })}
+                    </td>
+                    <td className="py-4 px-6 text-right">
+                      <form action={setUserPlan}>
+                        <input type="hidden" name="user_id" value={u.id} />
+                        <input type="hidden" name="plan" value={u.plan === 'pro' ? 'free' : 'pro'} />
+                        <button
+                          type="submit"
+                          className={
+                            u.plan === 'pro'
+                              ? 'text-xs font-semibold px-3 py-1.5 rounded-lg border border-[hsl(240_15%_18%)] text-[hsl(240_5%_70%)] hover:text-white hover:border-white/30 transition-colors cursor-pointer'
+                              : 'text-xs font-semibold px-3 py-1.5 rounded-lg bg-[hsl(263_90%_64%)] text-white hover:opacity-90 transition-opacity cursor-pointer'
+                          }
+                        >
+                          {u.plan === 'pro' ? 'Torna a Free' : 'Attiva PRO'}
+                        </button>
+                      </form>
                     </td>
                   </tr>
                 ))
