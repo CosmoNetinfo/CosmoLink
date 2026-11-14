@@ -6,6 +6,8 @@ import { PlatformIcon } from '@/components/shared/PlatformIcon';
 import { trackView, trackClick } from '@/lib/analytics';
 import { themeToCSS } from '@/lib/resolve-theme';
 import { Logo } from '@/components/shared/Logo';
+import { safeUrl } from '@/lib/safe-url';
+import { SITE_URL } from '@/lib/site';
 import type { Profile, Link, ThemeConfig, Platform } from '@/types';
 
 interface PublicPageClientProps {
@@ -240,7 +242,7 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
               return (
                 <a
                   key={platform}
-                  href={url as string}
+                  href={safeUrl(url as string)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="opacity-80 hover:opacity-100 hover:scale-110 transition-all transform duration-200"
@@ -296,7 +298,7 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
             return (
               <motion.a
                 key={link.id}
-                href={link.url}
+                href={safeUrl(link.url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleLinkClick(link.id)}
@@ -325,7 +327,7 @@ export default function PublicPageClient({ profile, links, themeConfig, platform
 
         {/* Viral CTA Button */}
         <a
-          href={`https://cosmolink.app/auth/register?utm_source=public_page&utm_medium=cta&utm_campaign=viral&ref=${profile.username}`}
+          href={`${SITE_URL}/auth/register?utm_source=public_page&utm_medium=cta&utm_campaign=viral&ref=${encodeURIComponent(profile.username)}`}
           className="w-full max-w-[320px] sm:max-w-[280px] hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200"
           style={{
             display: 'flex',

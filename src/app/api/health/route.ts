@@ -11,7 +11,12 @@ import { createClient } from '@/lib/supabase/server';
  *
  * Use this to diagnose MIDDLEWARE_INVOCATION_TIMEOUT errors.
  */
-export async function GET() {
+export async function GET(request: Request) {
+  // I dettagli completi li vede solo chi ha il segreto (CRON_SECRET o HEALTH_SECRET).
+  // Il pubblico riceve solo lo stato generale.
+  const secret = process.env.HEALTH_SECRET || process.env.CRON_SECRET;
+  const isPrivileged = !!secret && request.headers.get('authorization') === `Bearer ${secret}`;
+
   const checks: {
     name: string;
     status: 'ok' | 'fail' | 'warn';
@@ -55,7 +60,7 @@ export async function GET() {
     const urlTime = Date.now() - urlCheckStart;
     checks.push({
       name: 'supabase_reachable',
-      status: res.ok || res.status === 400 ? (urlTime > 3000 ? 'warn' : 'ok') : 'fail',
+      status: res.ok || res.status === 400 || res.status === 401 || res.status === 403 ? (urlTime > 3000 ? 'warn' : 'ok') : 'fail',
       time_ms: urlTime,
       detail: `HTTP ${res.status} ${res.statusText}`,
     });
@@ -172,31 +177,25 @@ export async function GET() {
   const hasFails = checks.some((c) => c.status === 'fail');
   const hasWarns = checks.some((c) => c.status === 'warn');
 
+  const overall = hasFails ? 'unhealthy' : hasWarns ? 'degraded' : 'healthy';
+
+  if (!isPrivileged) {
+    return NextResponse.json({ status: overall }, { status: hasFails ? 503 : 200 });
+  }
+
   return NextResponse.json(
     {
-      status: hasFails ? 'unhealthy' : hasWarns ? 'degraded' : 'healthy',
+      status: overall,
       timestamp: new Date().toISOString(),
       total_time_ms,
-      supabase_url: process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/https?:\/\//, '').split('.')[0] + '.supabase.co',
       region: process.env.VERCEL_REGION || 'unknown',
       checks,
       recommendations: [
-        ...(hasFails
-          ? ['❌ One or more checks failed. See details above.']
-          : []),
+        ...(hasFails ? ['❌ One or more checks failed. See details above.'] : []),
         ...(total_time_ms > 5000
           ? [
               '⚠️ Total health check took >5s. The Supabase project may be paused or in a cold start.',
               '💡 Go to Supabase Dashboard → Project Settings and verify the project is active.',
-              '💡 Consider upgrading the Supabase project region to match Vercel deployment region.',
-            ]
-          : []),
-        ...(checks.some((c) => c.name === 'supabase_reachable' && c.time_ms > 2000)
-          ? [
-              '⚠️ Supabase endpoint is slow (>2s). Possible causes:',
-              '  1. Project is waking up from paused state (Free tier pauses after 1 week of inactivity)',
-              '  2. Region mismatch between Vercel and Supabase',
-              '  3. Supabase infrastructure issues — check status.supabase.com',
             ]
           : []),
       ],
