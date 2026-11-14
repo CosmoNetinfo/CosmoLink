@@ -43,13 +43,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Link not found' }, { status: 404 });
     }
 
-    await supabase.from('link_clicks').insert({
+    const { error: insertError } = await supabase.from('link_clicks').insert({
       link_id: link.id,
       user_id: link.user_id,
       device,
       browser,
       referrer,
     });
+
+    if (insertError) {
+      console.error('track/click: insert failed', insertError.message);
+      return NextResponse.json({ error: 'Insert failed' }, { status: 500 });
+    }
 
     return NextResponse.json({ ok: true });
   } catch {
