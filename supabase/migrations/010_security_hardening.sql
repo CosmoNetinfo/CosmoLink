@@ -58,7 +58,13 @@ DECLARE
   user_plan TEXT;
   active_links INTEGER;
 BEGIN
-  IF auth.role() NOT IN ('anon', 'authenticated') THEN
+  IF COALESCE(auth.role(), '') NOT IN ('anon', 'authenticated') THEN
+    RETURN NEW;
+  END IF;
+
+  -- Un link gia' attivo che resta dello stesso tipo non viene ricontrollato:
+  -- cosi' chi ha gia' piu' link del limite puo' comunque modificarli o riordinarli.
+  IF TG_OP = 'UPDATE' AND OLD.is_active AND OLD.link_type = NEW.link_type THEN
     RETURN NEW;
   END IF;
 
