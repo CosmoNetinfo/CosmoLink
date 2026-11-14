@@ -227,7 +227,7 @@ export default function SettingsPage() {
 
         <div className="space-y-4">
           <p className="text-xs text-[hsl(240_5%_70%)]">
-            Una volta cancellato o uscito dall'account, la tua pagina pubblica cesserà immediatamente di essere visualizzabile sul web.
+            Uscendo dall'account chiudi solo la sessione su questo dispositivo: la tua pagina pubblica resta online. Per cancellare l'account e tutti i tuoi dati scrivici dalla pagina Privacy.
           </p>
 
           {!deleteConfirm ? (
